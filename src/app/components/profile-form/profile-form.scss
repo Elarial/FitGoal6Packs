@@ -1,0 +1,329 @@
+﻿.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card-header {
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 1.25rem;
+
+  .step-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+    background: rgba(16, 185, 129, 0.12);
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+    margin-bottom: 0.5rem;
+  }
+
+  .title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.35rem;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+fieldset.form-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.group-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.65rem;
+
+  .hint {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+}
+
+.label-with-count {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+
+  .group-label {
+    margin-bottom: 0;
+  }
+
+  .active-count-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    background: rgba(16, 185, 129, 0.12);
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-full);
+  }
+}
+
+/* Toggle Group for Gender & Diet */
+.toggle-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  background: var(--bg-input);
+  padding: 0.35rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+
+  &.three-cols {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  .icon {
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &.active {
+    background: var(--color-primary);
+    color: #090d16;
+    font-weight: 700;
+    box-shadow: 0 4px 12px var(--color-primary-glow);
+  }
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-primary-glow);
+    }
+  }
+
+  .unit {
+    position: absolute;
+    right: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+}
+
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+
+  &.goals-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.choice-card {
+  text-align: left;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.2rem;
+  }
+
+  .card-icon {
+    font-size: 1.4rem;
+  }
+
+  .multiplier-badge,
+  .calorie-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--bg-accent);
+    color: var(--text-secondary);
+  }
+
+  .choice-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .choice-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.35;
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: var(--bg-card-hover);
+    transform: translateY(-1px);
+  }
+
+  &.active {
+    border-color: var(--color-primary);
+    background: rgba(16, 185, 129, 0.08);
+    box-shadow: 0 4px 18px var(--color-primary-glow);
+
+    .choice-title {
+      color: var(--color-primary);
+    }
+
+    .multiplier-badge,
+    .calorie-badge {
+      background: var(--color-primary);
+      color: #090d16;
+    }
+  }
+}
+
+/* Frequency Row */
+.frequency-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem;
+}
+
+.freq-card {
+  text-align: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 0.5rem;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+
+  .freq-number {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1;
+  }
+
+  .freq-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+
+  .freq-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    line-height: 1.2;
+    margin-top: 0.2rem;
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: var(--bg-card-hover);
+  }
+
+  &.active {
+    border-color: var(--color-primary);
+    background: rgba(16, 185, 129, 0.1);
+    box-shadow: 0 4px 14px var(--color-primary-glow);
+
+    .freq-number,
+    .freq-label {
+      color: var(--color-primary);
+    }
+  }
+}
+
+/* Responsiveness */
+@media (max-width: 900px) {
+  .cards-grid.goals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .frequency-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .frequency-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .toggle-group.three-cols {
+    grid-template-columns: 1fr;
+  }
+}

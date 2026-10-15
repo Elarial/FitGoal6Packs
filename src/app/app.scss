@@ -1,0 +1,109 @@
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.content-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.hero-intro {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto;
+
+  .page-title {
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+    margin-bottom: 0.85rem;
+
+    .gradient-text {
+      background: linear-gradient(135deg, #10b981 0%, #38bdf8 60%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .page-desc {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: 480px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.grid-column {
+  min-width: 0;
+}
+
+.profile-col {
+  position: sticky;
+  top: 5rem;
+}
+
+.app-footer {
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  padding: 2rem 1.5rem;
+  text-align: center;
+
+  .footer-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .footer-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .footer-disclaimer {
+    font-size: 0.775rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+  }
+}
+
+/* Responsiveness */
+@media (max-width: 1100px) {
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-col {
+    position: static;
+  }
+}
+
+@media (max-width: 650px) {
+  .hero-intro .page-title {
+    font-size: 2rem;
+  }
+
+  .main-content {
+    padding: 1.5rem 1rem 3rem;
+  }
+}

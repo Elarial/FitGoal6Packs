@@ -1,0 +1,240 @@
+﻿<section class="dashboard-container" aria-labelledby="dashboard-title">
+  <!-- Titre et En-tête -->
+  <div class="dashboard-header">
+    <div class="step-tag">Étape 2</div>
+    <h2 id="dashboard-title" class="title">Besoins Nutritionnels & Répartition</h2>
+    <p class="subtitle">
+      Calculs personnalisés basés sur votre métabolisme de base (Mifflin-St Jeor) et votre rythme de vie.
+    </p>
+  </div>
+
+  <!-- 1. Carte Principale : Calories Cibles & Métabolisme -->
+  <div class="calorie-hero-card">
+    <div class="hero-left">
+      <span class="hero-caption">Objectif Énergétique Quotidien</span>
+      <div class="hero-calorie-display">
+        <span class="hero-number">{{ plan().targetCalories }}</span>
+        <span class="hero-unit">kcal / jour</span>
+      </div>
+
+      <div class="hero-delta-badge" [class.deficit]="plan().calorieDelta < 0" [class.surplus]="plan().calorieDelta > 0">
+        @if (plan().calorieDelta < 0) {
+          <span>🔥 Déficit contrôlé : {{ plan().calorieDelta }} kcal</span>
+        } @else if (plan().calorieDelta > 0) {
+          <span>⚡ Surplus anabolique : +{{ plan().calorieDelta }} kcal</span>
+        } @else {
+          <span>⚖️ Maintenance stricte</span>
+        }
+      </div>
+    </div>
+
+    <div class="hero-stats-grid">
+      <div class="stat-pill">
+        <span class="stat-label">Métabolisme de Base (MB)</span>
+        <span class="stat-val">{{ plan().bmr }} kcal</span>
+        <span class="stat-sub">Au repos complet</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Dépense Totale (DEJ)</span>
+        <span class="stat-val">{{ plan().tdee }} kcal</span>
+        <span class="stat-sub">Activité incluse</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Indice de Masse Corporelle</span>
+        <span class="stat-val">{{ plan().bmi }}</span>
+        <span class="stat-sub highlight-bmi">{{ plan().bmiCategory }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Barre Proportionnelle des Macronutriments -->
+  <div class="macro-bar-card">
+    <div class="macro-bar-header">
+      <span class="bar-title">Équilibre des Macronutriments</span>
+      <span class="bar-legend">
+        <span class="legend-item protein"><span class="legend-dot"></span> Protéines {{ plan().macros.proteinPercent }}%</span>
+        <span class="legend-item carbs"><span class="legend-dot"></span> Glucides {{ plan().macros.carbsPercent }}%</span>
+        <span class="legend-item fats"><span class="legend-dot"></span> Lipides {{ plan().macros.fatsPercent }}%</span>
+      </span>
+    </div>
+
+    <div class="multi-progress-bar" role="progressbar" aria-label="Distribution des macronutriments">
+      <div
+        class="progress-segment protein"
+        [style.width.%]="plan().macros.proteinPercent"
+        title="Protéines : {{ plan().macros.proteinPercent }}%"
+      ></div>
+      <div
+        class="progress-segment carbs"
+        [style.width.%]="plan().macros.carbsPercent"
+        title="Glucides : {{ plan().macros.carbsPercent }}%"
+      ></div>
+      <div
+        class="progress-segment fats"
+        [style.width.%]="plan().macros.fatsPercent"
+        title="Lipides : {{ plan().macros.fatsPercent }}%"
+      ></div>
+    </div>
+  </div>
+
+  <!-- 3. Cartes Détaillées des 3 Macronutriments Majeurs -->
+  <div class="macros-grid">
+    <!-- Protéines -->
+    <div class="macro-card protein-card">
+      <div class="card-glow"></div>
+      <div class="macro-top">
+        <div class="macro-badge">🥩 Protéines</div>
+        <span class="macro-ratio">{{ proteinPerKg() }} g/kg</span>
+      </div>
+      <div class="macro-main">
+        <span class="macro-value">{{ plan().macros.protein }}</span>
+        <span class="macro-unit">g</span>
+      </div>
+      <div class="macro-footer">
+        <span class="cal-count">{{ plan().macros.proteinCalories }} kcal</span>
+        <span class="pct-count">{{ plan().macros.proteinPercent }}% des apports</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill protein-fill" [style.width.%]="plan().macros.proteinPercent"></div>
+      </div>
+      <p class="macro-hint">Essentiel pour la masse musculaire, la satiété et la régénération tissulaire.</p>
+    </div>
+
+    <!-- Glucides -->
+    <div class="macro-card carbs-card">
+      <div class="card-glow"></div>
+      <div class="macro-top">
+        <div class="macro-badge">🌾 Glucides</div>
+        <span class="macro-ratio">Énergie</span>
+      </div>
+      <div class="macro-main">
+        <span class="macro-value">{{ plan().macros.carbs }}</span>
+        <span class="macro-unit">g</span>
+      </div>
+      <div class="macro-footer">
+        <span class="cal-count">{{ plan().macros.carbsCalories }} kcal</span>
+        <span class="pct-count">{{ plan().macros.carbsPercent }}% des apports</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill carbs-fill" [style.width.%]="plan().macros.carbsPercent"></div>
+      </div>
+      <p class="macro-hint">Carburant prioritaire du cerveau et des efforts musculaires d'intensité modérée à haute.</p>
+    </div>
+
+    <!-- Lipides -->
+    <div class="macro-card fats-card">
+      <div class="card-glow"></div>
+      <div class="macro-top">
+        <div class="macro-badge">🥑 Lipides</div>
+        <span class="macro-ratio">{{ fatsPerKg() }} g/kg</span>
+      </div>
+      <div class="macro-main">
+        <span class="macro-value">{{ plan().macros.fats }}</span>
+        <span class="macro-unit">g</span>
+      </div>
+      <div class="macro-footer">
+        <span class="cal-count">{{ plan().macros.fatsCalories }} kcal</span>
+        <span class="pct-count">{{ plan().macros.fatsPercent }}% des apports</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill fats-fill" [style.width.%]="plan().macros.fatsPercent"></div>
+      </div>
+      <p class="macro-hint">Primordial pour la synthèse des hormones, la santé cellulaire et l'assimilation des vitamines.</p>
+    </div>
+  </div>
+
+  <!-- 4. Piliers complémentaires : Fibres et Hydratation -->
+  <div class="secondary-metrics-grid">
+    <div class="sec-card fiber-card">
+      <div class="sec-icon">🥦</div>
+      <div class="sec-info">
+        <span class="sec-title">Fibres alimentaires</span>
+        <div class="sec-value">
+          <span class="num">{{ plan().macros.fiber }}</span>
+          <span class="unit">g / jour</span>
+        </div>
+        <span class="sec-desc">Favorise le transit et la régulation de la glycémie</span>
+      </div>
+    </div>
+
+    <div class="sec-card water-card">
+      <div class="sec-icon">💧</div>
+      <div class="sec-info">
+        <span class="sec-title">Hydratation conseillée</span>
+        <div class="sec-value">
+          <span class="num">{{ (plan().macros.waterMl / 1000).toFixed(1) }}</span>
+          <span class="unit">Litres / jour</span>
+        </div>
+        <span class="sec-desc">Adaptée à votre poids et à votre intensité sportive</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Répartition détaillée Par Repas -->
+  <div class="meals-breakdown-card">
+    <div class="meals-header">
+      <div>
+        <h3 class="section-title">Répartition selon vos {{ plan().meals.length }} repas quotidiens</h3>
+        <p class="section-sub">
+          Voici les repères nutritionnels recommandés pour chaque prise afin d'atteindre vos objectifs facilement.
+        </p>
+      </div>
+      <div class="meals-count-chip">
+        {{ plan().meals.length }} prises / 24h
+      </div>
+    </div>
+
+    <div class="meals-grid">
+      @for (meal of plan().meals; track meal.id) {
+        <div class="meal-slot-card">
+          <div class="meal-card-top">
+            <div class="meal-identity">
+              <span class="meal-icon">{{ meal.icon }}</span>
+              <div>
+                <h4 class="meal-name">{{ meal.name }}</h4>
+                <span class="meal-time">{{ meal.timeSuggestion }}</span>
+              </div>
+            </div>
+            <div class="meal-pct-tag">{{ (meal.ratio * 100).toFixed(0) }}%</div>
+          </div>
+
+          <div class="meal-calories">
+            <span class="meal-cal-num">{{ meal.calories }}</span>
+            <span class="meal-cal-txt">kcal</span>
+          </div>
+
+          <div class="meal-macros-chips">
+            <div class="macro-chip chip-protein" title="Protéines">
+              <span class="chip-label">P</span>
+              <span class="chip-val">{{ meal.protein }}g</span>
+            </div>
+            <div class="macro-chip chip-carbs" title="Glucides">
+              <span class="chip-label">G</span>
+              <span class="chip-val">{{ meal.carbs }}g</span>
+            </div>
+            <div class="macro-chip chip-fats" title="Lipides">
+              <span class="chip-label">L</span>
+              <span class="chip-val">{{ meal.fats }}g</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- 6. Recommandations personnalisées -->
+  <div class="tips-card">
+    <h3 class="tips-title">
+      <span class="tips-icon">💡</span>
+      Conseils personnalisés pour votre profil
+    </h3>
+    <ul class="tips-list">
+      @for (tip of plan().recommendations; track tip) {
+        <li class="tip-item">
+          <span class="tip-check">✓</span>
+          <span class="tip-text">{{ tip }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

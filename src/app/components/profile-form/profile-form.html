@@ -1,0 +1,201 @@
+﻿<section class="form-card" aria-labelledby="profile-title">
+  <div class="card-header">
+    <div class="step-tag">Étape 1</div>
+    <h2 id="profile-title" class="title">Votre Profil Nutritionnel</h2>
+    <p class="subtitle">
+      Renseignez vos caractéristiques pour calculer avec précision votre métabolisme et vos besoins en macronutriments.
+    </p>
+  </div>
+
+  <form class="profile-form" (submit)="$event.preventDefault()">
+    <!-- 1. Sexe biologique -->
+    <fieldset class="form-group">
+      <legend class="group-label">Sexe biologique <span class="hint">(Requis pour le calcul métabolique)</span></legend>
+      <div class="toggle-group" role="radiogroup" aria-label="Sexe biologique">
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="profile().gender === 'male'"
+          (click)="setGender('male')"
+          role="radio"
+          [attr.aria-checked]="profile().gender === 'male'"
+        >
+          <span class="icon">👨</span>
+          <span class="text">Homme</span>
+        </button>
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="profile().gender === 'female'"
+          (click)="setGender('female')"
+          role="radio"
+          [attr.aria-checked]="profile().gender === 'female'"
+        >
+          <span class="icon">👩</span>
+          <span class="text">Femme</span>
+        </button>
+      </div>
+    </fieldset>
+
+    <!-- 2. Biométrie : Âge, Taille, Poids -->
+    <div class="metrics-grid">
+      <div class="form-group">
+        <label for="input-age" class="group-label">Âge</label>
+        <div class="input-wrapper">
+          <input
+            id="input-age"
+            type="number"
+            min="14"
+            max="100"
+            [value]="profile().age"
+            (input)="onNumberChange('age', $event)"
+            required
+          />
+          <span class="unit">ans</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="input-height" class="group-label">Taille</label>
+        <div class="input-wrapper">
+          <input
+            id="input-height"
+            type="number"
+            min="120"
+            max="230"
+            [value]="profile().height"
+            (input)="onNumberChange('height', $event)"
+            required
+          />
+          <span class="unit">cm</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="input-weight" class="group-label">Poids actuel</label>
+        <div class="input-wrapper">
+          <input
+            id="input-weight"
+            type="number"
+            min="35"
+            max="250"
+            step="0.5"
+            [value]="profile().weight"
+            (input)="onNumberChange('weight', $event)"
+            required
+          />
+          <span class="unit">kg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Niveau d'Activité Physique -->
+    <fieldset class="form-group">
+      <legend class="group-label">Niveau d'activité physique quotidienne</legend>
+      <div class="cards-grid activity-grid" role="radiogroup" aria-label="Niveau d'activité physique">
+        @for (item of activityOptions; track item.level) {
+          <button
+            type="button"
+            class="choice-card"
+            [class.active]="profile().activityLevel === item.level"
+            (click)="setActivityLevel(item.level)"
+            role="radio"
+            [attr.aria-checked]="profile().activityLevel === item.level"
+          >
+            <div class="card-top">
+              <span class="card-icon">{{ item.icon }}</span>
+              <span class="multiplier-badge">{{ item.multiplier }}</span>
+            </div>
+            <div class="choice-title">{{ item.label }}</div>
+            <div class="choice-desc">{{ item.description }}</div>
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <!-- 4. Objectif Nutritionnel -->
+    <fieldset class="form-group">
+      <legend class="group-label">Votre objectif principal</legend>
+      <div class="cards-grid goals-grid" role="radiogroup" aria-label="Objectif nutritionnel">
+        @for (item of goalOptions; track item.goal) {
+          <button
+            type="button"
+            class="choice-card goal-card"
+            [class.active]="profile().goal === item.goal"
+            (click)="setGoal(item.goal)"
+            role="radio"
+            [attr.aria-checked]="profile().goal === item.goal"
+          >
+            <div class="card-top">
+              <span class="card-icon">{{ item.icon }}</span>
+              <span class="calorie-badge">{{ item.badge }}</span>
+            </div>
+            <div class="choice-title">{{ item.label }}</div>
+            <div class="choice-desc">{{ item.description }}</div>
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <!-- 5. Fréquence de repas par jour -->
+    <fieldset class="form-group">
+      <div class="label-with-count">
+        <legend class="group-label">Nombre de repas par jour</legend>
+        <span class="active-count-badge">{{ profile().mealsPerDay }} prises / jour</span>
+      </div>
+      <div class="frequency-row" role="radiogroup" aria-label="Fréquence des repas">
+        @for (item of mealFrequencyOptions; track item.count) {
+          <button
+            type="button"
+            class="freq-card"
+            [class.active]="profile().mealsPerDay === item.count"
+            (click)="setMealsPerDay(item.count)"
+            role="radio"
+            [attr.aria-checked]="profile().mealsPerDay === item.count"
+          >
+            <span class="freq-number">{{ item.count }}</span>
+            <span class="freq-label">{{ item.label }}</span>
+            <span class="freq-sub">{{ item.detail }}</span>
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <!-- 6. Répartition Macro / Type de diète -->
+    <fieldset class="form-group">
+      <legend class="group-label">Orientation de l'alimentation</legend>
+      <div class="toggle-group three-cols" role="radiogroup" aria-label="Type de diète">
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="profile().dietType === 'balanced'"
+          (click)="setDietType('balanced')"
+          role="radio"
+          [attr.aria-checked]="profile().dietType === 'balanced'"
+        >
+          <span class="text">🥗 Équilibrée</span>
+        </button>
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="profile().dietType === 'high_protein'"
+          (click)="setDietType('high_protein')"
+          role="radio"
+          [attr.aria-checked]="profile().dietType === 'high_protein'"
+        >
+          <span class="text">🥩 High Protein</span>
+        </button>
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="profile().dietType === 'low_carb'"
+          (click)="setDietType('low_carb')"
+          role="radio"
+          [attr.aria-checked]="profile().dietType === 'low_carb'"
+        >
+          <span class="text">🥑 Low Carb</span>
+        </button>
+      </div>
+    </fieldset>
+  </form>
+</section>

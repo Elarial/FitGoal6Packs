@@ -1,12 +1,12 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { HeaderComponent } from './components/header/header';
+import { ProfileFormComponent } from './components/profile-form/profile-form';
+import { NutritionDashboardComponent } from './components/nutrition-dashboard/nutrition-dashboard';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.scss',
+  imports: [HeaderComponent, ProfileFormComponent, NutritionDashboardComponent],
   templateUrl: './app.html',
+  styleUrl: './app.scss',
 })
-export class App {
-  protected readonly title = signal('fit-goal');
-}
+export class App {}
