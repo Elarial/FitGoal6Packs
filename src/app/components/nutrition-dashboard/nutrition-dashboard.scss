@@ -1,34 +1,88 @@
-﻿.dashboard-container {
+﻿.dashboard-flow {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2.5rem;
 }
 
-.dashboard-header {
-  .step-tag {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-secondary);
-    background: rgba(6, 182, 212, 0.12);
-    padding: 0.2rem 0.6rem;
-    border-radius: var(--radius-full);
-    margin-bottom: 0.5rem;
+.step-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.step-header {
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 1.5rem;
+
+  .step-badge-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
   }
 
-  .title {
-    font-size: 1.4rem;
+  .step-badge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+
+    &.step-badge-teal {
+      color: var(--color-secondary);
+      background: rgba(6, 182, 212, 0.14);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+
+    &.step-badge-blue {
+      color: var(--macro-protein);
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    &.step-badge-purple {
+      color: var(--macro-fiber);
+      background: rgba(167, 139, 250, 0.14);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+    }
+  }
+
+  .step-badge-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .title-with-pill {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.4rem;
+
+    .step-title {
+      margin-bottom: 0;
+    }
+  }
+
+  .step-title {
+    font-size: 1.75rem;
     font-weight: 800;
     color: #ffffff;
-    margin-bottom: 0.35rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
   }
 
-  .subtitle {
-    font-size: 0.875rem;
+  .step-desc {
+    font-size: 0.95rem;
     color: var(--text-secondary);
-    line-height: 1.45;
+    line-height: 1.5;
   }
 }
 
@@ -37,7 +91,7 @@
   background: linear-gradient(135deg, #131b2e 0%, #1a2744 100%);
   border: 1px solid rgba(16, 185, 129, 0.25);
   border-radius: var(--radius-lg);
-  padding: 1.75rem;
+  padding: 1.75rem 2rem;
   box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 30px rgba(16, 185, 129, 0.1);
   display: flex;
   justify-content: space-between;
@@ -66,16 +120,15 @@
   gap: 0.65rem;
 
   .hero-number {
-    font-size: 3.2rem;
+    font-size: 3.5rem;
     font-weight: 800;
     line-height: 1;
     color: #ffffff;
     letter-spacing: -0.03em;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   }
 
   .hero-unit {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: var(--color-primary);
   }
@@ -86,7 +139,7 @@
   align-items: center;
   font-size: 0.85rem;
   font-weight: 700;
-  padding: 0.3rem 0.75rem;
+  padding: 0.35rem 0.85rem;
   border-radius: var(--radius-full);
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-primary);
@@ -115,10 +168,10 @@
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 0.9rem 1.25rem;
+  padding: 1rem 1.25rem;
   display: flex;
   flex-direction: column;
-  min-width: 140px;
+  min-width: 145px;
 
   .stat-label {
     font-size: 0.75rem;
@@ -127,7 +180,7 @@
   }
 
   .stat-val {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 800;
     color: #ffffff;
     margin: 0.2rem 0;
@@ -146,7 +199,7 @@
 
 /* 2. Macro Bar */
 .macro-bar-card {
-  background: var(--bg-card);
+  background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 1.25rem 1.5rem;
@@ -156,7 +209,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
   flex-wrap: wrap;
   gap: 0.75rem;
 
@@ -208,8 +261,8 @@
 
 .multi-progress-bar {
   display: flex;
-  height: 12px;
-  background: var(--bg-input);
+  height: 14px;
+  background: var(--bg-card);
   border-radius: var(--radius-full);
   overflow: hidden;
   gap: 2px;
@@ -239,11 +292,10 @@
 
 .macro-card {
   position: relative;
-  background: var(--bg-card);
+  background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-card);
+  padding: 1.6rem;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -322,14 +374,14 @@
   gap: 0.35rem;
 
   .macro-value {
-    font-size: 2.5rem;
+    font-size: 2.6rem;
     font-weight: 800;
     line-height: 1;
     color: #ffffff;
   }
 
   .macro-unit {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--text-secondary);
   }
@@ -338,14 +390,14 @@
 .macro-footer {
   display: flex;
   justify-content: space-between;
-  font-size: 0.825rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-secondary);
 }
 
 .progress-track {
   height: 6px;
-  background: var(--bg-input);
+  background: var(--bg-card);
   border-radius: var(--radius-full);
   overflow: hidden;
 
@@ -366,9 +418,9 @@
 }
 
 .macro-hint {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  line-height: 1.35;
+  line-height: 1.4;
   margin-top: auto;
 }
 
@@ -380,7 +432,7 @@
 }
 
 .sec-card {
-  background: var(--bg-card);
+  background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 1.25rem 1.5rem;
@@ -393,7 +445,7 @@
     width: 52px;
     height: 52px;
     border-radius: var(--radius-md);
-    background: var(--bg-input);
+    background: var(--bg-card);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -418,82 +470,53 @@
     gap: 0.35rem;
 
     .num {
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       font-weight: 800;
       color: #ffffff;
       line-height: 1.1;
     }
     .unit {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--text-muted);
     }
   }
 
   .sec-desc {
-    font-size: 0.775rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
   }
 }
 
 /* 5. Meals Breakdown */
-.meals-breakdown-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.75rem;
-  box-shadow: var(--shadow-card);
-}
-
-.meals-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  gap: 1rem;
-  flex-wrap: wrap;
-
-  .section-title {
-    font-size: 1.2rem;
-    font-weight: 800;
-    color: #ffffff;
-    margin-bottom: 0.2rem;
-  }
-
-  .section-sub {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-  }
-
-  .meals-count-chip {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    background: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.25);
-    padding: 0.35rem 0.85rem;
-    border-radius: var(--radius-full);
-  }
+.meals-count-chip {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--macro-fiber);
+  background: rgba(167, 139, 250, 0.14);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
 }
 
 .meals-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
 }
 
 .meal-slot-card {
   background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 1.15rem;
+  padding: 1.35rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.85rem;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.18);
     background: var(--bg-card-hover);
     transform: translateY(-2px);
   }
@@ -507,30 +530,31 @@
   .meal-identity {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
+    gap: 0.75rem;
   }
 
   .meal-icon {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   .meal-name {
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: #ffffff;
+    margin: 0;
   }
 
   .meal-time {
-    font-size: 0.75rem;
+    font-size: 0.775rem;
     color: var(--text-muted);
   }
 
   .meal-pct-tag {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-secondary);
     background: var(--bg-accent);
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.55rem;
     border-radius: var(--radius-full);
   }
 }
@@ -538,17 +562,17 @@
 .meal-calories {
   display: flex;
   align-items: baseline;
-  gap: 0.3rem;
+  gap: 0.35rem;
 
   .meal-cal-num {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 800;
     color: #ffffff;
     line-height: 1;
   }
 
   .meal-cal-txt {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--color-primary);
   }
@@ -557,7 +581,7 @@
 .meal-macros-chips {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .macro-chip {
@@ -565,9 +589,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
-  padding: 0.35rem 0.45rem;
+  padding: 0.4rem 0.5rem;
   border-radius: var(--radius-sm);
-  font-size: 0.78rem;
+  font-size: 0.825rem;
   font-weight: 700;
 
   .chip-label {
@@ -594,20 +618,20 @@
   background: rgba(16, 185, 129, 0.05);
   border: 1px solid rgba(16, 185, 129, 0.2);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  padding: 1.75rem 2rem;
 }
 
 .tips-title {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
 
   .tips-icon {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
   }
 }
 
@@ -615,24 +639,25 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .tip-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
+  gap: 0.85rem;
 
   .tip-check {
     color: var(--color-primary);
     font-weight: 800;
     line-height: 1.4;
+    font-size: 1.1rem;
   }
 
   .tip-text {
-    font-size: 0.875rem;
+    font-size: 0.925rem;
     color: var(--text-secondary);
-    line-height: 1.45;
+    line-height: 1.5;
   }
 }
 
@@ -641,18 +666,19 @@
   .macros-grid {
     grid-template-columns: 1fr;
   }
-
   .secondary-metrics-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 650px) {
+  .step-card {
+    padding: 1.5rem;
+  }
   .calorie-hero-card {
     flex-direction: column;
     align-items: flex-start;
   }
-
   .hero-stats-grid {
     width: 100%;
     .stat-pill {

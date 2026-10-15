@@ -2,26 +2,55 @@
   <app-header></app-header>
 
   <main class="main-content">
-    <div class="content-container">
-      <div class="hero-intro">
+    <div class="flow-container">
+      <!-- En-tête / Bannière principale -->
+      <header class="hero-intro">
         <h1 class="page-title">
-          Optimisez votre <span class="gradient-text">alimentation</span> sur-mesure
+          Votre Plan Nutritionnel <span class="gradient-text">Sur-Mesure</span>
         </h1>
         <p class="page-desc">
-          FitGoal calcule scientifiquement votre métabolisme de base, votre dépense totale journalière (DEJ) et ventile précisément vos macronutriments (Protéines, Glucides, Lipides) selon le nombre de repas souhaité.
+          Renseignez votre profil à l'étape 1 pour découvrir immédiatement en dessous votre métabolisme, vos besoins en macronutriments et votre plan repas détaillé.
         </p>
+
+        <!-- Fil de navigation entre les étapes -->
+        <nav class="stepper-nav" aria-label="Progression des étapes">
+          <a href="#etape-1" class="step-pill active">
+            <span class="step-num">1</span>
+            <span class="step-name">Profil & Repas</span>
+          </a>
+          <span class="step-arrow" aria-hidden="true">→</span>
+          <a href="#etape-2" class="step-pill">
+            <span class="step-num">2</span>
+            <span class="step-name">Bilan Calorique</span>
+          </a>
+          <span class="step-arrow" aria-hidden="true">→</span>
+          <a href="#etape-3" class="step-pill">
+            <span class="step-num">3</span>
+            <span class="step-name">Macronutriments</span>
+          </a>
+          <span class="step-arrow" aria-hidden="true">→</span>
+          <a href="#etape-4" class="step-pill">
+            <span class="step-num">4</span>
+            <span class="step-name">Plan par Repas</span>
+          </a>
+        </nav>
+      </header>
+
+      <!-- Étape 1 : Formulaire du profil (en haut) -->
+      <div id="etape-1" class="flow-step">
+        <app-profile-form></app-profile-form>
       </div>
 
-      <div class="app-grid">
-        <!-- Colonne Gauche : Formulaire interactif du profil -->
-        <aside class="grid-column profile-col" aria-label="Paramètres du profil">
-          <app-profile-form></app-profile-form>
-        </aside>
+      <!-- Séparateur vertical visuel -->
+      <div class="flow-separator" aria-hidden="true">
+        <div class="separator-line"></div>
+        <div class="separator-icon">↓</div>
+        <div class="separator-line"></div>
+      </div>
 
-        <!-- Colonne Droite : Tableau de bord nutritionnel et répartition -->
-        <section class="grid-column dashboard-col" aria-label="Résultats nutritionnels">
-          <app-nutrition-dashboard></app-nutrition-dashboard>
-        </section>
+      <!-- Étapes 2, 3, 4 et conseils (en dessous) -->
+      <div class="flow-step">
+        <app-nutrition-dashboard></app-nutrition-dashboard>
       </div>
     </div>
   </main>
@@ -29,10 +58,10 @@
   <footer class="app-footer">
     <div class="footer-container">
       <p class="footer-text">
-        FitGoal &bull; Calculs métaboliques basés sur la formule validée de Mifflin-St Jeor.
+        FitGoal &bull; Calculs métaboliques scientifiquement calibrés sur l'équation de Mifflin-St Jeor.
       </p>
       <p class="footer-disclaimer">
-        Les recommandations fournies sont des estimations à visée informative et ne se substituent pas à un avis médical ou à un suivi diététique personnalisé.
+        Les résultats et répartitions sont des estimations pour votre organisation diététique quotidienne. Consultez un professionnel de santé pour tout besoin clinique spécifique.
       </p>
     </div>
   </footer>

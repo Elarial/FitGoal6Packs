@@ -1,201 +1,254 @@
-﻿<section class="form-card" aria-labelledby="profile-title">
-  <div class="card-header">
-    <div class="step-tag">Étape 1</div>
-    <h2 id="profile-title" class="title">Votre Profil Nutritionnel</h2>
-    <p class="subtitle">
-      Renseignez vos caractéristiques pour calculer avec précision votre métabolisme et vos besoins en macronutriments.
+﻿<section class="step-card" aria-labelledby="step-1-title">
+  <!-- En-tête de l'étape 1 -->
+  <div class="step-header">
+    <div class="step-badge-group">
+      <span class="step-badge">Étape 1 sur 4</span>
+      <span class="step-badge-sub">Saisie des informations</span>
+    </div>
+    <h2 id="step-1-title" class="step-title">Votre Profil & Rythme de Vie</h2>
+    <p class="step-desc">
+      Renseignez vos caractéristiques physiques et vos habitudes pour permettre le calcul de votre métabolisme et de vos macronutriments.
     </p>
   </div>
 
-  <form class="profile-form" (submit)="$event.preventDefault()">
-    <!-- 1. Sexe biologique -->
-    <fieldset class="form-group">
-      <legend class="group-label">Sexe biologique <span class="hint">(Requis pour le calcul métabolique)</span></legend>
-      <div class="toggle-group" role="radiogroup" aria-label="Sexe biologique">
-        <button
-          type="button"
-          class="toggle-btn"
-          [class.active]="profile().gender === 'male'"
-          (click)="setGender('male')"
-          role="radio"
-          [attr.aria-checked]="profile().gender === 'male'"
-        >
-          <span class="icon">👨</span>
-          <span class="text">Homme</span>
-        </button>
-        <button
-          type="button"
-          class="toggle-btn"
-          [class.active]="profile().gender === 'female'"
-          (click)="setGender('female')"
-          role="radio"
-          [attr.aria-checked]="profile().gender === 'female'"
-        >
-          <span class="icon">👩</span>
-          <span class="text">Femme</span>
-        </button>
+  <form class="step-form" (submit)="$event.preventDefault()">
+    <!-- 1.1 Sexe & Biométrie -->
+    <div class="form-section">
+      <div class="section-title-row">
+        <span class="section-icon">👤</span>
+        <h3 class="section-heading">Biométrie & Sexe Biologique</h3>
       </div>
-    </fieldset>
 
-    <!-- 2. Biométrie : Âge, Taille, Poids -->
-    <div class="metrics-grid">
-      <div class="form-group">
-        <label for="input-age" class="group-label">Âge</label>
-        <div class="input-wrapper">
-          <input
-            id="input-age"
-            type="number"
-            min="14"
-            max="100"
-            [value]="profile().age"
-            (input)="onNumberChange('age', $event)"
-            required
-          />
-          <span class="unit">ans</span>
+      <div class="bio-grid">
+        <!-- Sexe biologique -->
+        <fieldset class="bio-group gender-box">
+          <legend class="field-label">Sexe biologique</legend>
+          <div class="gender-toggle" role="radiogroup" aria-label="Sexe biologique">
+            <button
+              type="button"
+              class="gender-btn"
+              [class.active]="profile().gender === 'male'"
+              (click)="setGender('male')"
+              role="radio"
+              [attr.aria-checked]="profile().gender === 'male'"
+            >
+              <span class="gender-icon">👨</span>
+              <span class="gender-name">Homme</span>
+            </button>
+            <button
+              type="button"
+              class="gender-btn"
+              [class.active]="profile().gender === 'female'"
+              (click)="setGender('female')"
+              role="radio"
+              [attr.aria-checked]="profile().gender === 'female'"
+            >
+              <span class="gender-icon">👩</span>
+              <span class="gender-name">Femme</span>
+            </button>
+          </div>
+        </fieldset>
+
+        <!-- Âge -->
+        <div class="bio-group">
+          <label for="input-age" class="field-label">Âge</label>
+          <div class="field-input-box">
+            <input
+              id="input-age"
+              type="number"
+              min="14"
+              max="100"
+              [value]="profile().age"
+              (input)="onNumberChange('age', $event)"
+              required
+            />
+            <span class="field-unit">ans</span>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="input-height" class="group-label">Taille</label>
-        <div class="input-wrapper">
-          <input
-            id="input-height"
-            type="number"
-            min="120"
-            max="230"
-            [value]="profile().height"
-            (input)="onNumberChange('height', $event)"
-            required
-          />
-          <span class="unit">cm</span>
+        <!-- Taille -->
+        <div class="bio-group">
+          <label for="input-height" class="field-label">Taille</label>
+          <div class="field-input-box">
+            <input
+              id="input-height"
+              type="number"
+              min="120"
+              max="230"
+              [value]="profile().height"
+              (input)="onNumberChange('height', $event)"
+              required
+            />
+            <span class="field-unit">cm</span>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="input-weight" class="group-label">Poids actuel</label>
-        <div class="input-wrapper">
-          <input
-            id="input-weight"
-            type="number"
-            min="35"
-            max="250"
-            step="0.5"
-            [value]="profile().weight"
-            (input)="onNumberChange('weight', $event)"
-            required
-          />
-          <span class="unit">kg</span>
+        <!-- Poids -->
+        <div class="bio-group">
+          <label for="input-weight" class="field-label">Poids actuel</label>
+          <div class="field-input-box">
+            <input
+              id="input-weight"
+              type="number"
+              min="35"
+              max="250"
+              step="0.5"
+              [value]="profile().weight"
+              (input)="onNumberChange('weight', $event)"
+              required
+            />
+            <span class="field-unit">kg</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 3. Niveau d'Activité Physique -->
-    <fieldset class="form-group">
-      <legend class="group-label">Niveau d'activité physique quotidienne</legend>
-      <div class="cards-grid activity-grid" role="radiogroup" aria-label="Niveau d'activité physique">
+    <!-- 1.2 Niveau d'Activité Physique -->
+    <div class="form-section">
+      <div class="section-title-row">
+        <span class="section-icon">🏃</span>
+        <div>
+          <h3 class="section-heading">Niveau d'activité physique quotidienne</h3>
+          <p class="section-helper">Détermine le multiplicateur de dépense énergétique au-dessus de votre métabolisme de base.</p>
+        </div>
+      </div>
+
+      <div class="activity-cards" role="radiogroup" aria-label="Niveau d'activité">
         @for (item of activityOptions; track item.level) {
           <button
             type="button"
-            class="choice-card"
+            class="choice-btn"
             [class.active]="profile().activityLevel === item.level"
             (click)="setActivityLevel(item.level)"
             role="radio"
             [attr.aria-checked]="profile().activityLevel === item.level"
           >
-            <div class="card-top">
-              <span class="card-icon">{{ item.icon }}</span>
-              <span class="multiplier-badge">{{ item.multiplier }}</span>
+            <div class="choice-top">
+              <span class="choice-emoji">{{ item.icon }}</span>
+              <span class="choice-tag">{{ item.multiplier }}</span>
             </div>
             <div class="choice-title">{{ item.label }}</div>
             <div class="choice-desc">{{ item.description }}</div>
           </button>
         }
       </div>
-    </fieldset>
+    </div>
 
-    <!-- 4. Objectif Nutritionnel -->
-    <fieldset class="form-group">
-      <legend class="group-label">Votre objectif principal</legend>
-      <div class="cards-grid goals-grid" role="radiogroup" aria-label="Objectif nutritionnel">
+    <!-- 1.3 Objectif Nutritionnel -->
+    <div class="form-section">
+      <div class="section-title-row">
+        <span class="section-icon">🎯</span>
+        <div>
+          <h3 class="section-heading">Objectif principal</h3>
+          <p class="section-helper">Ajuste la balance calorique et le ratio des macronutriments cibles.</p>
+        </div>
+      </div>
+
+      <div class="goal-cards" role="radiogroup" aria-label="Objectif nutritionnel">
         @for (item of goalOptions; track item.goal) {
           <button
             type="button"
-            class="choice-card goal-card"
+            class="choice-btn goal-btn"
             [class.active]="profile().goal === item.goal"
             (click)="setGoal(item.goal)"
             role="radio"
             [attr.aria-checked]="profile().goal === item.goal"
           >
-            <div class="card-top">
-              <span class="card-icon">{{ item.icon }}</span>
-              <span class="calorie-badge">{{ item.badge }}</span>
+            <div class="choice-top">
+              <span class="choice-emoji">{{ item.icon }}</span>
+              <span class="choice-delta-tag">{{ item.badge }}</span>
             </div>
             <div class="choice-title">{{ item.label }}</div>
             <div class="choice-desc">{{ item.description }}</div>
           </button>
         }
       </div>
-    </fieldset>
+    </div>
 
-    <!-- 5. Fréquence de repas par jour -->
-    <fieldset class="form-group">
-      <div class="label-with-count">
-        <legend class="group-label">Nombre de repas par jour</legend>
-        <span class="active-count-badge">{{ profile().mealsPerDay }} prises / jour</span>
+    <!-- 1.4 Fréquence des repas par jour -->
+    <div class="form-section highlight-section">
+      <div class="section-title-row space-between">
+        <div class="title-with-desc">
+          <span class="section-icon">🍽️</span>
+          <div>
+            <h3 class="section-heading">Fréquence des repas par jour</h3>
+            <p class="section-helper">Combien de prises alimentaires souhaitez-vous avoir dans votre journée ?</p>
+          </div>
+        </div>
+        <div class="active-badge">{{ profile().mealsPerDay }} repas / 24h</div>
       </div>
-      <div class="frequency-row" role="radiogroup" aria-label="Fréquence des repas">
+
+      <div class="frequency-grid" role="radiogroup" aria-label="Nombre de repas par jour">
         @for (item of mealFrequencyOptions; track item.count) {
           <button
             type="button"
-            class="freq-card"
+            class="freq-item"
             [class.active]="profile().mealsPerDay === item.count"
             (click)="setMealsPerDay(item.count)"
             role="radio"
             [attr.aria-checked]="profile().mealsPerDay === item.count"
           >
-            <span class="freq-number">{{ item.count }}</span>
-            <span class="freq-label">{{ item.label }}</span>
-            <span class="freq-sub">{{ item.detail }}</span>
+            <span class="freq-digit">{{ item.count }}</span>
+            <span class="freq-name">{{ item.label }}</span>
+            <span class="freq-details">{{ item.detail }}</span>
           </button>
         }
       </div>
-    </fieldset>
+    </div>
 
-    <!-- 6. Répartition Macro / Type de diète -->
-    <fieldset class="form-group">
-      <legend class="group-label">Orientation de l'alimentation</legend>
-      <div class="toggle-group three-cols" role="radiogroup" aria-label="Type de diète">
+    <!-- 1.5 Préférence diététique -->
+    <div class="form-section">
+      <div class="section-title-row">
+        <span class="section-icon">🥗</span>
+        <div>
+          <h3 class="section-heading">Style d'alimentation</h3>
+          <p class="section-helper">Personnalise la répartition relative entre lipides et glucides.</p>
+        </div>
+      </div>
+
+      <div class="diet-toggles" role="radiogroup" aria-label="Style d'alimentation">
         <button
           type="button"
-          class="toggle-btn"
+          class="diet-btn"
           [class.active]="profile().dietType === 'balanced'"
           (click)="setDietType('balanced')"
           role="radio"
           [attr.aria-checked]="profile().dietType === 'balanced'"
         >
-          <span class="text">🥗 Équilibrée</span>
+          <span class="diet-title">Équilibrée (Standard)</span>
+          <span class="diet-sub">Répartition harmonieuse adaptée à tous les profils</span>
         </button>
         <button
           type="button"
-          class="toggle-btn"
+          class="diet-btn"
           [class.active]="profile().dietType === 'high_protein'"
           (click)="setDietType('high_protein')"
           role="radio"
           [attr.aria-checked]="profile().dietType === 'high_protein'"
         >
-          <span class="text">🥩 High Protein</span>
+          <span class="diet-title">High Protein</span>
+          <span class="diet-sub">Accent mis sur la satiété et la protection musculaire</span>
         </button>
         <button
           type="button"
-          class="toggle-btn"
+          class="diet-btn"
           [class.active]="profile().dietType === 'low_carb'"
           (click)="setDietType('low_carb')"
           role="radio"
           [attr.aria-checked]="profile().dietType === 'low_carb'"
         >
-          <span class="text">🥑 Low Carb</span>
+          <span class="diet-title">Low Carb</span>
+          <span class="diet-sub">Modéré en glucides, favorisant les bonnes graisses</span>
         </button>
       </div>
-    </fieldset>
+    </div>
   </form>
+
+  <!-- Connecteur vers l'étape suivante -->
+  <div class="step-footer-link">
+    <a href="#etape-2" class="next-step-anchor">
+      <span>Consulter vos résultats (Étape 2 & 3 ci-dessous)</span>
+      <span class="anchor-arrow">↓</span>
+    </a>
+  </div>
 </section>
