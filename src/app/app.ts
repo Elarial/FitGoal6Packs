@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header';
-import { ProfileFormComponent } from './components/profile-form/profile-form';
-import { NutritionDashboardComponent } from './components/nutrition-dashboard/nutrition-dashboard';
 
 @Component({
   selector: 'app-root',
-  imports: [HeaderComponent, ProfileFormComponent, NutritionDashboardComponent],
+  imports: [RouterOutlet, HeaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

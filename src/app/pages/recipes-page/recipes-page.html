@@ -1,0 +1,439 @@
+﻿<div class="recipes-page-container">
+  <!-- En-tête de la page -->
+  <header class="recipes-hero">
+    <div class="hero-tag">🍽️ Idées Menus & Cuisine Diététique</div>
+    <h1 class="hero-title">
+      Recettes Adaptées à <span class="gradient-text">Vos Besoins</span>
+    </h1>
+    <p class="hero-desc">
+      Découvrez des fiches recettes détaillées avec ingrédients, pesées et instructions pas-à-pas.
+      Les quantités s'adaptent automatiquement à vos calories cibles calculées à la page précédente !
+    </p>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- BANNIÈRE DE CONTEXTE NUTRITIONNEL DE L'UTILISATEUR       -->
+  <!-- ======================================================== -->
+  <section class="context-card" aria-label="Vos repères nutritionnels personnalisés">
+    <div class="context-header">
+      <div class="context-title-group">
+        <span class="context-icon">🎯</span>
+        <div>
+          <h2 class="context-title">Vos Repères Nutritionnels Actuels</h2>
+          <span class="context-subtitle">
+            Basé sur votre profil ({{ userProfile().weight }} kg, {{ userProfile().height }} cm) &bull; Objectif :
+            @switch (userProfile().goal) {
+              @case ('fat_loss') { <strong>Perte de masse grasse</strong> }
+              @case ('muscle_gain') { <strong>Prise de masse</strong> }
+              @default { <strong>Maintien & Équilibre</strong> }
+            }
+          </span>
+        </div>
+      </div>
+      <div class="context-total-badge">
+        <span class="badge-num">{{ plan().targetCalories }}</span>
+        <span class="badge-txt">kcal / jour</span>
+      </div>
+    </div>
+
+    <!-- Sélecteur des créneaux de repas de l'utilisateur -->
+    <div class="meal-slots-selector">
+      <span class="selector-label">Adapter les grammages à un repas :</span>
+      <div class="slots-pill-list" role="radiogroup" aria-label="Choisir un repas à calibrer">
+        <button
+          type="button"
+          class="slot-btn"
+          [class.active]="selectedMealSlot() === null"
+          (click)="selectMealSlot(null)"
+          role="radio"
+          [attr.aria-checked]="selectedMealSlot() === null"
+        >
+          <span>Portions Standards (1 pers.)</span>
+        </button>
+
+        @for (slot of plan().meals; track slot.id) {
+          <button
+            type="button"
+            class="slot-btn slot-custom"
+            [class.active]="selectedMealSlot()?.id === slot.id"
+            (click)="selectMealSlot(slot)"
+            role="radio"
+            [attr.aria-checked]="selectedMealSlot()?.id === slot.id"
+          >
+            <span class="slot-emoji">{{ slot.icon }}</span>
+            <span class="slot-name">{{ slot.name }}</span>
+            <span class="slot-cal">{{ slot.calories }} kcal</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Notification d'ajustement dynamique -->
+    @if (selectedMealSlot(); as activeSlot) {
+      <div class="adaptation-banner">
+        <span class="banner-icon">⚖️</span>
+        <div class="banner-text">
+          <strong>Mode calcul automatique actif pour : {{ activeSlot.name }} ({{ activeSlot.calories }} kcal)</strong>.
+          Les quantités de chaque ingrédient dans les fiches recettes ci-dessous sont recalculées pour combler précisément votre besoin sur cette prise.
+        </div>
+        <button type="button" class="clear-slot-btn" (click)="selectMealSlot(null)" title="Désactiver l'ajustement">
+          Réinitialiser
+        </button>
+      </div>
+    }
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- BARRE DE RECHERCHE ET FILTRES                            -->
+  <!-- ======================================================== -->
+  <section class="filters-card">
+    <div class="search-and-cats">
+      <!-- Champ de recherche -->
+      <div class="search-input-box">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          placeholder="Rechercher un plat, un ingrédient (poulet, avoine, saumon...)"
+          [value]="searchQuery()"
+          (input)="onSearchInput($event)"
+          aria-label="Recherche de recettes"
+        />
+        @if (searchQuery()) {
+          <button type="button" class="clear-search-btn" (click)="recipeService.setSearchQuery('')" aria-label="Effacer">
+            ✕
+          </button>
+        }
+      </div>
+
+      <!-- Filtres par catégorie de repas -->
+      <div class="category-tabs" role="tablist" aria-label="Catégories de repas">
+        <button
+          type="button"
+          class="cat-tab"
+          [class.active]="selectedCategory() === 'all'"
+          (click)="selectCategory('all')"
+          role="tab"
+          [attr.aria-selected]="selectedCategory() === 'all'"
+        >
+          Toutes
+        </button>
+        <button
+          type="button"
+          class="cat-tab"
+          [class.active]="selectedCategory() === 'breakfast'"
+          (click)="selectCategory('breakfast')"
+          role="tab"
+          [attr.aria-selected]="selectedCategory() === 'breakfast'"
+        >
+          🌅 Petit-déjeuner
+        </button>
+        <button
+          type="button"
+          class="cat-tab"
+          [class.active]="selectedCategory() === 'lunch'"
+          (click)="selectCategory('lunch')"
+          role="tab"
+          [attr.aria-selected]="selectedCategory() === 'lunch'"
+        >
+          ☀️ Déjeuner
+        </button>
+        <button
+          type="button"
+          class="cat-tab"
+          [class.active]="selectedCategory() === 'snack'"
+          (click)="selectCategory('snack')"
+          role="tab"
+          [attr.aria-selected]="selectedCategory() === 'snack'"
+        >
+          🍎 Collation
+        </button>
+        <button
+          type="button"
+          class="cat-tab"
+          [class.active]="selectedCategory() === 'dinner'"
+          (click)="selectCategory('dinner')"
+          role="tab"
+          [attr.aria-selected]="selectedCategory() === 'dinner'"
+        >
+          🌙 Dîner
+        </button>
+      </div>
+    </div>
+
+    <!-- Filtres par tags / types de diètes -->
+    <div class="tags-row">
+      <span class="tags-label">Filtres rapides :</span>
+      <div class="tags-list">
+        @for (item of availableTags; track item.tag) {
+          <button
+            type="button"
+            class="tag-chip"
+            [class.active]="activeTagFilter() === item.tag"
+            (click)="setTagFilter(item.tag)"
+          >
+            {{ item.label }}
+          </button>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- GRILLE DES RECETTES                                      -->
+  <!-- ======================================================== -->
+  <section class="recipes-grid-section" aria-label="Liste des recettes">
+    <div class="grid-header">
+      <span class="count-badge">
+        {{ displayedRecipes().length }} recette(s) disponible(s)
+      </span>
+      @if (selectedMealSlot(); as slot) {
+        <span class="active-scaling-indicator">
+          Calibré sur : <strong>{{ slot.name }} ({{ slot.calories }} kcal)</strong>
+        </span>
+      }
+    </div>
+
+    @if (displayedRecipes().length === 0) {
+      <div class="empty-state">
+        <span class="empty-emoji">🍳</span>
+        <h3>Aucune recette ne correspond à votre recherche</h3>
+        <p>Essayez de modifier votre mot-clé ou de réinitialiser les filtres.</p>
+        <button type="button" class="reset-filters-btn" (click)="recipeService.setSearchQuery(''); selectCategory('all'); setTagFilter('all')">
+          Afficher toutes les recettes
+        </button>
+      </div>
+    } @else {
+      <div class="recipes-cards-grid">
+        @for (recipe of displayedRecipes(); track recipe.id) {
+          @let scaled = getScaledRecipe(recipe);
+          <article class="recipe-card" [class.scaled-mode]="selectedMealSlot() !== null">
+            <!-- En-tête de la carte -->
+            <div class="card-top">
+              <div class="recipe-badge-row">
+                <span class="recipe-emoji">{{ recipe.emoji }}</span>
+                <div class="time-and-diff">
+                  <span class="meta-tag">⏱️ {{ recipe.prepTimeMinutes + recipe.cookTimeMinutes }} min</span>
+                  <span class="meta-tag diff-tag">{{ recipe.difficulty === 'easy' ? 'Facile' : 'Moyen' }}</span>
+                </div>
+              </div>
+
+              @if (selectedMealSlot() !== null && scaled.scaleFactor !== 1) {
+                <span class="scaling-factor-badge" [class.plus]="scaled.scaleFactor > 1">
+                  {{ scaled.scaleFactor > 1 ? '+' : '' }}{{ ((scaled.scaleFactor - 1) * 100).toFixed(0) }}% ajusté
+                </span>
+              }
+            </div>
+
+            <!-- Titre et description -->
+            <h3 class="recipe-title">{{ recipe.title }}</h3>
+            <p class="recipe-desc">{{ recipe.description }}</p>
+
+            <!-- Macros cibles (adaptées ou standards) -->
+            <div class="recipe-macros-box">
+              <div class="macro-stat cal-stat">
+                <span class="stat-num">{{ scaled.scaledNutrition.calories }}</span>
+                <span class="stat-unit">kcal</span>
+              </div>
+              <div class="macro-stat protein-stat">
+                <span class="stat-num">{{ scaled.scaledNutrition.protein }}g</span>
+                <span class="stat-unit">Protéines</span>
+              </div>
+              <div class="macro-stat carbs-stat">
+                <span class="stat-num">{{ scaled.scaledNutrition.carbs }}g</span>
+                <span class="stat-unit">Glucides</span>
+              </div>
+              <div class="macro-stat fats-stat">
+                <span class="stat-num">{{ scaled.scaledNutrition.fats }}g</span>
+                <span class="stat-unit">Lipides</span>
+              </div>
+            </div>
+
+            <!-- Aperçu rapide des ingrédients clés -->
+            <div class="ingredients-preview">
+              <span class="preview-label">Ingrédients principaux :</span>
+              <div class="preview-chips">
+                @for (ing of scaled.scaledIngredients.slice(0, 3); track ing.name) {
+                  <span class="preview-chip">
+                    {{ ing.name }} ({{ ing.weightGrams }}g)
+                  </span>
+                }
+                @if (scaled.scaledIngredients.length > 3) {
+                  <span class="preview-more">+{{ scaled.scaledIngredients.length - 3 }}</span>
+                }
+              </div>
+            </div>
+
+            <!-- Bouton d'ouverture de la fiche complète -->
+            <button
+              type="button"
+              class="view-recipe-btn"
+              (click)="openRecipeModal(recipe)"
+              aria-label="Voir la fiche complète de la recette {{ recipe.title }}"
+            >
+              <span>Voir la recette & les pesées</span>
+              <span class="arrow-icon">→</span>
+            </button>
+          </article>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- MODALE : FICHE DE RECETTE DÉTAILLÉE                      -->
+  <!-- ======================================================== -->
+  @if (activeModalRecipe(); as modalRecipe) {
+    @let modalScaled = getScaledRecipe(modalRecipe);
+    <div
+      class="modal-backdrop"
+      (click)="closeRecipeModal()"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="modalRecipe.title"
+    >
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <!-- Bouton Fermer -->
+        <button
+          type="button"
+          class="modal-close-btn"
+          (click)="closeRecipeModal()"
+          aria-label="Fermer la fiche recette"
+        >
+          ✕
+        </button>
+
+        <!-- En-tête de la modale -->
+        <div class="modal-header">
+          <div class="modal-identity">
+            <span class="modal-emoji">{{ modalRecipe.emoji }}</span>
+            <div>
+              <div class="modal-meta-row">
+                <span class="modal-badge-diff">{{ modalRecipe.difficulty === 'easy' ? 'Facile' : 'Intermédiaire' }}</span>
+                <span class="modal-badge-time">Prépa : {{ modalRecipe.prepTimeMinutes }} min &bull; Cuisson : {{ modalRecipe.cookTimeMinutes }} min</span>
+              </div>
+              <h2 class="modal-title">{{ modalRecipe.title }}</h2>
+              <p class="modal-desc">{{ modalRecipe.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sélecteur d'adaptation dans la modale -->
+        <div class="modal-scaler-box">
+          <div class="scaler-label-group">
+            <span class="scaler-icon">⚖️</span>
+            <div>
+              <span class="scaler-title">Calibrer les grammages pour un repas :</span>
+              <span class="scaler-sub">
+                Actuellement :
+                @if (selectedMealSlot(); as activeSlot) {
+                  <strong class="highlight-slot">{{ activeSlot.name }} ({{ activeSlot.calories }} kcal)</strong>
+                } @else {
+                  <strong>Portion standard de base (1 portion)</strong>
+                }
+              </span>
+            </div>
+          </div>
+
+          <div class="scaler-buttons">
+            <button
+              type="button"
+              class="mini-slot-btn"
+              [class.active]="selectedMealSlot() === null"
+              (click)="selectMealSlot(null)"
+            >
+              Standard
+            </button>
+            @for (slot of plan().meals; track slot.id) {
+              <button
+                type="button"
+                class="mini-slot-btn"
+                [class.active]="selectedMealSlot()?.id === slot.id"
+                (click)="selectMealSlot(slot)"
+              >
+                {{ slot.icon }} {{ slot.name }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Synthèse Nutritionnelle par Portion -->
+        <div class="modal-nutrition-grid">
+          <div class="nutri-card nutri-cal">
+            <span class="n-val">{{ modalScaled.scaledNutrition.calories }}</span>
+            <span class="n-lbl">Calories (kcal)</span>
+          </div>
+          <div class="nutri-card nutri-pro">
+            <span class="n-val">{{ modalScaled.scaledNutrition.protein }}g</span>
+            <span class="n-lbl">Protéines</span>
+          </div>
+          <div class="nutri-card nutri-car">
+            <span class="n-val">{{ modalScaled.scaledNutrition.carbs }}g</span>
+            <span class="n-lbl">Glucides</span>
+          </div>
+          <div class="nutri-card nutri-fat">
+            <span class="n-val">{{ modalScaled.scaledNutrition.fats }}g</span>
+            <span class="n-lbl">Lipides</span>
+          </div>
+          @if (modalScaled.scaledNutrition.fiber) {
+            <div class="nutri-card nutri-fib">
+              <span class="n-val">{{ modalScaled.scaledNutrition.fiber }}g</span>
+              <span class="n-lbl">Fibres</span>
+            </div>
+          }
+        </div>
+
+        <!-- Corps : Ingrédients & Instructions -->
+        <div class="modal-body-grid">
+          <!-- Colonne Gauche : Ingrédients et pesées exactes -->
+          <div class="modal-ingredients-col">
+            <div class="col-header">
+              <h3 class="col-title">Ingrédients & Pesées</h3>
+              <span class="col-tag">Prêt à peser</span>
+            </div>
+
+            <ul class="ingredients-list">
+              @for (ing of modalScaled.scaledIngredients; track ing.name) {
+                <li class="ingredient-row">
+                  <div class="ing-left">
+                    <span class="ing-dot" [class]="'cat-' + ing.category"></span>
+                    <span class="ing-name">{{ ing.name }}</span>
+                    @if (ing.note) {
+                      <span class="ing-note">({{ ing.note }})</span>
+                    }
+                  </div>
+                  <div class="ing-right">
+                    <span class="ing-weight">{{ ing.weightGrams }} {{ ing.unit ?? 'g' }}</span>
+                  </div>
+                </li>
+              }
+            </ul>
+          </div>
+
+          <!-- Colonne Droite : Instructions pas-à-pas -->
+          <div class="modal-instructions-col">
+            <div class="col-header">
+              <h3 class="col-title">Préparation Étape par Étape</h3>
+              <span class="col-tag">Simple & rapide</span>
+            </div>
+
+            <ol class="instructions-list">
+              @for (step of modalRecipe.instructions; track step; let idx = $index) {
+                <li class="step-row">
+                  <span class="step-index">{{ idx + 1 }}</span>
+                  <p class="step-text">{{ step }}</p>
+                </li>
+              }
+            </ol>
+          </div>
+        </div>
+
+        <!-- Pied de page de la modale -->
+        <div class="modal-footer">
+          <button type="button" class="btn-done" (click)="closeRecipeModal()">
+            Terminer la consultation
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

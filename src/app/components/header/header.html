@@ -1,36 +1,59 @@
 ﻿<header class="navbar">
   <div class="nav-container">
     <div class="brand">
-      <div class="logo-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-        </svg>
-      </div>
-      <div class="brand-text">
-        <span class="brand-title">Fit<span class="highlight">Goal</span></span>
-        <span class="brand-tag">Diététique & Nutrition</span>
-      </div>
+      <a routerLink="/" class="brand-link" title="Accueil FitGoal">
+        <div class="logo-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Fit<span class="highlight">Goal</span></span>
+          <span class="brand-tag">Diététique & Nutrition</span>
+        </div>
+      </a>
     </div>
+
+    <!-- Navigation principale -->
+    <nav class="main-nav" aria-label="Navigation principale">
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-tab"
+      >
+        <span class="nav-icon">📊</span>
+        <span>Plan & Profil</span>
+      </a>
+      <a
+        routerLink="/recettes"
+        routerLinkActive="active"
+        class="nav-tab"
+      >
+        <span class="nav-icon">🍳</span>
+        <span>Recettes Personnalisées</span>
+      </a>
+    </nav>
 
     <div class="header-status">
       <div class="badge goal-badge">
         <span class="badge-dot"></span>
         @switch (plan().userProfile.goal) {
           @case ('fat_loss') {
-            <span>Objectif : Perte de masse grasse</span>
+            <span>Perte de gras</span>
           }
           @case ('muscle_gain') {
-            <span>Objectif : Prise de masse</span>
+            <span>Prise de masse</span>
           }
           @default {
-            <span>Objectif : Maintien & Forme</span>
+            <span>Maintien</span>
           }
         }
       </div>
 
       <div class="badge meals-badge">
         <span class="meals-icon">🍽️</span>
-        <span>{{ plan().userProfile.mealsPerDay }} repas / jour</span>
+        <span>{{ plan().userProfile.mealsPerDay }} repas/j</span>
       </div>
 
       <button
@@ -40,7 +63,7 @@
         title="Réinitialiser les valeurs par défaut"
         aria-label="Réinitialiser les paramètres"
       >
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
           <path d="M3 3v5h5" />
         </svg>

@@ -1,0 +1,51 @@
+﻿<div class="flow-container">
+  <!-- En-tête / Bannière principale -->
+  <header class="hero-intro">
+    <h1 class="page-title">
+      Votre Plan Nutritionnel <span class="gradient-text">Sur-Mesure</span>
+    </h1>
+    <p class="page-desc">
+      Renseignez votre profil à l'étape 1 pour découvrir immédiatement en dessous votre métabolisme, vos besoins en macronutriments et votre plan repas détaillé.
+    </p>
+
+    <!-- Fil de navigation entre les étapes -->
+    <nav class="stepper-nav" aria-label="Progression des étapes">
+      <a href="#etape-1" class="step-pill active">
+        <span class="step-num">1</span>
+        <span class="step-name">Profil & Repas</span>
+      </a>
+      <span class="step-arrow" aria-hidden="true">→</span>
+      <a href="#etape-2" class="step-pill">
+        <span class="step-num">2</span>
+        <span class="step-name">Bilan Calorique</span>
+      </a>
+      <span class="step-arrow" aria-hidden="true">→</span>
+      <a href="#etape-3" class="step-pill">
+        <span class="step-num">3</span>
+        <span class="step-name">Macronutriments</span>
+      </a>
+      <span class="step-arrow" aria-hidden="true">→</span>
+      <a href="#etape-4" class="step-pill">
+        <span class="step-num">4</span>
+        <span class="step-name">Plan par Repas</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- Étape 1 : Formulaire du profil (en haut) -->
+  <div id="etape-1" class="flow-step">
+    <app-profile-form></app-profile-form>
+  </div>
+
+  <!-- Séparateur vertical visuel -->
+  <div class="flow-separator" aria-hidden="true">
+    <div class="separator-line"></div>
+    <div class="separator-icon">↓</div>
+    <div class="separator-line"></div>
+  </div>
+
+  <!-- Étapes 2, 3, 4 et conseils (en dessous) -->
+  <div class="flow-step">
+    <app-nutrition-dashboard></app-nutrition-dashboard>
+  </div>
+</div>
