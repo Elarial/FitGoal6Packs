@@ -41,6 +41,7 @@ export class RecipesPageComponent {
   // Liste des tags disponibles
   protected readonly availableTags: { tag: string; label: string }[] = [
     { tag: 'all', label: 'Toutes' },
+    { tag: 'air_fryer', label: '🌪️ Air Fryer' },
     { tag: 'high_protein', label: '🥩 High Protein' },
     { tag: 'balanced', label: '🥗 Équilibrées' },
     { tag: 'low_carb', label: '🥑 Low Carb' },

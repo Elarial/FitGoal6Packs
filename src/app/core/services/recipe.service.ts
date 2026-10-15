@@ -51,6 +51,7 @@ export class RecipeService {
 
   /**
    * Adapte proportionnellement les grammages d'une recette
+   * (poids de référence, poids sec ET poids cuit)
    * pour atteindre exactement la cible calorique d'un repas de l'utilisateur.
    */
   scaleRecipeToTarget(recipe: Recipe, targetCalories: number): ScaledRecipe {
@@ -61,11 +62,22 @@ export class RecipeService {
       // Les assaisonnements et herbes ne doublent pas brutalement
       const isSeasoning = ing.category === 'seasoning';
       const weightFactor = isSeasoning ? Math.min(Math.max(factor, 0.8), 1.3) : factor;
+
       const scaledWeight = Math.round(ing.weightGrams * weightFactor);
+      const scaledDryWeight =
+        ing.dryWeightGrams != null
+          ? Math.round(ing.dryWeightGrams * weightFactor)
+          : undefined;
+      const scaledCookedWeight =
+        ing.cookedWeightGrams != null
+          ? Math.round(ing.cookedWeightGrams * weightFactor)
+          : undefined;
 
       return {
         ...ing,
         weightGrams: scaledWeight,
+        dryWeightGrams: scaledDryWeight,
+        cookedWeightGrams: scaledCookedWeight,
       };
     });
 

@@ -44,6 +44,10 @@
     font-size: 1.05rem;
     color: var(--text-secondary);
     line-height: 1.6;
+
+    strong {
+      color: #ffffff;
+    }
   }
 }
 
@@ -429,6 +433,7 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
+  flex-wrap: wrap;
 
   .recipe-emoji {
     font-size: 1.8rem;
@@ -439,6 +444,7 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    flex-wrap: wrap;
   }
 
   .meta-tag {
@@ -451,6 +457,12 @@
 
     &.diff-tag {
       color: #6ee7b7;
+    }
+
+    &.air-fryer-tag {
+      color: #fb923c;
+      background: rgba(251, 146, 60, 0.14);
+      border: 1px solid rgba(251, 146, 60, 0.3);
     }
   }
 }
@@ -546,8 +558,12 @@
     font-weight: 600;
     color: var(--text-secondary);
     background: var(--bg-accent);
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.55rem;
     border-radius: var(--radius-sm);
+
+    strong {
+      color: #ffffff;
+    }
   }
 
   .preview-more {
@@ -644,7 +660,7 @@
   background: var(--bg-card);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-lg);
-  max-width: 860px;
+  max-width: 890px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -693,13 +709,24 @@
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.35rem;
+    flex-wrap: wrap;
+
+    .modal-badge-airfryer {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #fb923c;
+      background: rgba(251, 146, 60, 0.16);
+      border: 1px solid rgba(251, 146, 60, 0.35);
+      padding: 0.2rem 0.65rem;
+      border-radius: var(--radius-full);
+    }
 
     .modal-badge-diff {
       font-size: 0.72rem;
       font-weight: 700;
       color: #6ee7b7;
       background: rgba(16, 185, 129, 0.12);
-      padding: 0.15rem 0.55rem;
+      padding: 0.2rem 0.55rem;
       border-radius: var(--radius-full);
     }
 
@@ -837,7 +864,7 @@
 
 .modal-body-grid {
   display: grid;
-  grid-template-columns: 1fr 1.25fr;
+  grid-template-columns: 1.15fr 1.1fr;
   gap: 1.5rem;
 }
 
@@ -864,7 +891,7 @@
   .col-tag {
     font-size: 0.72rem;
     font-weight: 600;
-    color: var(--text-muted);
+    color: var(--color-secondary);
   }
 }
 
@@ -872,7 +899,7 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.55rem;
 }
 
 .ingredient-row {
@@ -890,6 +917,7 @@
     align-items: center;
     gap: 0.55rem;
     flex: 1;
+    min-width: 0;
   }
 
   .ing-dot {
@@ -907,6 +935,13 @@
     &.cat-seasoning { background: #94a3b8; }
   }
 
+  .ing-texts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+  }
+
   .ing-name {
     color: #ffffff;
     font-weight: 600;
@@ -914,7 +949,7 @@
 
   .ing-note {
     color: var(--text-muted);
-    font-size: 0.78rem;
+    font-size: 0.75rem;
   }
 
   .ing-right {
@@ -927,6 +962,41 @@
     background: rgba(16, 185, 129, 0.1);
     padding: 0.2rem 0.55rem;
     border-radius: var(--radius-sm);
+  }
+}
+
+/* Double Weight Chips */
+.double-weight-container {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.weight-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+
+  strong {
+    font-weight: 800;
+  }
+
+  &.dry-chip {
+    color: var(--color-primary);
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  &.cooked-chip {
+    color: var(--macro-carbs);
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.3);
   }
 }
 
@@ -1005,5 +1075,10 @@
   .filters-card,
   .modal-card {
     padding: 1.25rem;
+  }
+
+  .double-weight-container {
+    flex-direction: column;
+    align-items: flex-end;
   }
 }

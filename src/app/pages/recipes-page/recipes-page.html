@@ -1,12 +1,12 @@
 ﻿<div class="recipes-page-container">
   <!-- En-tête de la page -->
   <header class="recipes-hero">
-    <div class="hero-tag">🍽️ Idées Menus & Cuisine Diététique</div>
+    <div class="hero-tag">🌪️ Idées Menus & Cuisson Air Fryer</div>
     <h1 class="hero-title">
       Recettes Adaptées à <span class="gradient-text">Vos Besoins</span>
     </h1>
     <p class="hero-desc">
-      Découvrez des fiches recettes détaillées avec ingrédients, pesées et instructions pas-à-pas.
+      Fiches recettes détaillées avec <strong>double pesée sec & cuit</strong> pour les aliments absorbant l'eau et temps optimisés pour <strong>Air Fryer</strong>.
       Les quantités s'adaptent automatiquement à vos calories cibles calculées à la page précédente !
     </p>
   </header>
@@ -74,7 +74,7 @@
         <span class="banner-icon">⚖️</span>
         <div class="banner-text">
           <strong>Mode calcul automatique actif pour : {{ activeSlot.name }} ({{ activeSlot.calories }} kcal)</strong>.
-          Les quantités de chaque ingrédient dans les fiches recettes ci-dessous sont recalculées pour combler précisément votre besoin sur cette prise.
+          Les quantités sèches et cuites de chaque ingrédient dans les fiches ci-dessous sont recalculées pour combler précisément votre besoin sur cette prise.
         </div>
         <button type="button" class="clear-slot-btn" (click)="selectMealSlot(null)" title="Désactiver l'ajustement">
           Réinitialiser
@@ -93,7 +93,7 @@
         <span class="search-icon">🔍</span>
         <input
           type="text"
-          placeholder="Rechercher un plat, un ingrédient (poulet, avoine, saumon...)"
+          placeholder="Rechercher un plat, un ingrédient (poulet, quinoa, saumon, riz...)"
           [value]="searchQuery()"
           (input)="onSearchInput($event)"
           aria-label="Recherche de recettes"
@@ -212,6 +212,9 @@
               <div class="recipe-badge-row">
                 <span class="recipe-emoji">{{ recipe.emoji }}</span>
                 <div class="time-and-diff">
+                  @if (recipe.cookingMethod === 'air_fryer' || recipe.tags.includes('air_fryer')) {
+                    <span class="meta-tag air-fryer-tag">🌪️ Air Fryer</span>
+                  }
                   <span class="meta-tag">⏱️ {{ recipe.prepTimeMinutes + recipe.cookTimeMinutes }} min</span>
                   <span class="meta-tag diff-tag">{{ recipe.difficulty === 'easy' ? 'Facile' : 'Moyen' }}</span>
                 </div>
@@ -248,17 +251,21 @@
               </div>
             </div>
 
-            <!-- Aperçu rapide des ingrédients clés -->
+            <!-- Aperçu rapide des ingrédients clés avec mention sec / cuit si applicable -->
             <div class="ingredients-preview">
-              <span class="preview-label">Ingrédients principaux :</span>
+              <span class="preview-label">Ingrédients pesés (sec / cuit) :</span>
               <div class="preview-chips">
                 @for (ing of scaled.scaledIngredients.slice(0, 3); track ing.name) {
                   <span class="preview-chip">
-                    {{ ing.name }} ({{ ing.weightGrams }}g)
+                    @if (ing.dryWeightGrams && ing.cookedWeightGrams) {
+                      <strong>{{ ing.name }}</strong> ({{ ing.dryWeightGrams }}g sec &bull; ~{{ ing.cookedWeightGrams }}g cuit)
+                    } @else {
+                      {{ ing.name }} ({{ ing.weightGrams }}g)
+                    }
                   </span>
                 }
                 @if (scaled.scaledIngredients.length > 3) {
-                  <span class="preview-more">+{{ scaled.scaledIngredients.length - 3 }}</span>
+                  <span class="preview-more">+{{ scaled.scaledIngredients.length - 3 }} autres</span>
                 }
               </div>
             </div>
@@ -270,7 +277,7 @@
               (click)="openRecipeModal(recipe)"
               aria-label="Voir la fiche complète de la recette {{ recipe.title }}"
             >
-              <span>Voir la recette & les pesées</span>
+              <span>Voir la recette & pesées détaillées</span>
               <span class="arrow-icon">→</span>
             </button>
           </article>
@@ -308,6 +315,9 @@
             <span class="modal-emoji">{{ modalRecipe.emoji }}</span>
             <div>
               <div class="modal-meta-row">
+                @if (modalRecipe.cookingMethod === 'air_fryer' || modalRecipe.tags.includes('air_fryer')) {
+                  <span class="modal-badge-airfryer">🌪️ Cuisson Air Fryer</span>
+                }
                 <span class="modal-badge-diff">{{ modalRecipe.difficulty === 'easy' ? 'Facile' : 'Intermédiaire' }}</span>
                 <span class="modal-badge-time">Prépa : {{ modalRecipe.prepTimeMinutes }} min &bull; Cuisson : {{ modalRecipe.cookTimeMinutes }} min</span>
               </div>
@@ -384,11 +394,11 @@
 
         <!-- Corps : Ingrédients & Instructions -->
         <div class="modal-body-grid">
-          <!-- Colonne Gauche : Ingrédients et pesées exactes -->
+          <!-- Colonne Gauche : Ingrédients et pesées exactes sec / cuit -->
           <div class="modal-ingredients-col">
             <div class="col-header">
-              <h3 class="col-title">Ingrédients & Pesées</h3>
-              <span class="col-tag">Prêt à peser</span>
+              <h3 class="col-title">Ingrédients & Pesées Précises</h3>
+              <span class="col-tag">Double repère Sec / Cuit</span>
             </div>
 
             <ul class="ingredients-list">
@@ -396,24 +406,37 @@
                 <li class="ingredient-row">
                   <div class="ing-left">
                     <span class="ing-dot" [class]="'cat-' + ing.category"></span>
-                    <span class="ing-name">{{ ing.name }}</span>
-                    @if (ing.note) {
-                      <span class="ing-note">({{ ing.note }})</span>
-                    }
+                    <div class="ing-texts">
+                      <span class="ing-name">{{ ing.name }}</span>
+                      @if (ing.note) {
+                        <span class="ing-note">{{ ing.note }}</span>
+                      }
+                    </div>
                   </div>
                   <div class="ing-right">
-                    <span class="ing-weight">{{ ing.weightGrams }} {{ ing.unit ?? 'g' }}</span>
+                    @if (ing.dryWeightGrams && ing.cookedWeightGrams) {
+                      <div class="double-weight-container">
+                        <span class="weight-chip dry-chip" title="Poids à peser cru sur la balance">
+                          ⚖️ <strong>{{ ing.dryWeightGrams }}g</strong> sec
+                        </span>
+                        <span class="weight-chip cooked-chip" title="Poids équivalent cuit dans votre assiette">
+                          🥘 <strong>~{{ ing.cookedWeightGrams }}g</strong> cuit
+                        </span>
+                      </div>
+                    } @else {
+                      <span class="ing-weight">{{ ing.weightGrams }} {{ ing.unit ?? 'g' }}</span>
+                    }
                   </div>
                 </li>
               }
             </ul>
           </div>
 
-          <!-- Colonne Droite : Instructions pas-à-pas -->
+          <!-- Colonne Droite : Instructions pas-à-pas Air Fryer -->
           <div class="modal-instructions-col">
             <div class="col-header">
-              <h3 class="col-title">Préparation Étape par Étape</h3>
-              <span class="col-tag">Simple & rapide</span>
+              <h3 class="col-title">Instructions & Cuisson Air Fryer</h3>
+              <span class="col-tag">Rapide & croustillant</span>
             </div>
 
             <ol class="instructions-list">

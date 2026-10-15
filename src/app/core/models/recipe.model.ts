@@ -13,10 +13,12 @@ export type IngredientCategory =
 
 export interface RecipeIngredient {
   name: string;
-  weightGrams: number;       // Poids brut en grammes
-  unit?: string;             // Unité affichée optionnelle (ex: 'g', 'ml', 'pièce')
+  weightGrams: number;             // Poids de référence pour la pesée
+  dryWeightGrams?: number;         // Poids sec / cru (pour les aliments qui absorbent l'eau : riz, pâtes, avoine...)
+  cookedWeightGrams?: number;      // Poids cuit / réhydraté équivalent
+  unit?: string;                   // Unité affichée optionnelle (ex: 'g', 'ml', 'pièce')
   category: IngredientCategory;
-  note?: string;             // Précision (ex: 'râpé', 'égoutté', 'en dés')
+  note?: string;                   // Précision (ex: 'en lanières', 'en dés')
 }
 
 export interface RecipeNutrition {
@@ -34,12 +36,13 @@ export interface Recipe {
   mealCategories: MealCategory[];   // Peut convenir au déjeuner et au dîner
   prepTimeMinutes: number;
   cookTimeMinutes: number;
-  servings: number;                 // Nombre de portions de base (généralement 1)
+  servings: number;                 // Nombre de portions de base (1 portion)
   difficulty: RecipeDifficulty;
-  tags: string[];                   // 'high_protein', 'balanced', 'low_carb', 'express', 'vegetarian'...
+  cookingMethod?: 'air_fryer' | 'pan' | 'blender' | 'no_cook'; // Mode de cuisson principal
+  tags: string[];                   // 'high_protein', 'air_fryer', 'balanced', 'low_carb'...
   emoji: string;                    // Représentation visuelle
-  ingredients: RecipeIngredient[];  // Ingrédients avec grammages
-  instructions: string[];           // Étapes de préparation claires
+  ingredients: RecipeIngredient[];  // Ingrédients avec double pesée sec / cuit
+  instructions: string[];           // Étapes avec instructions Air Fryer
   nutritionPerServing: RecipeNutrition;
 }
 
