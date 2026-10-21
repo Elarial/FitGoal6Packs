@@ -17,6 +17,7 @@ export interface RecipeIngredient {
   dryWeightGrams?: number;         // Poids sec / cru (pour les aliments qui absorbent l'eau : riz, pâtes, avoine...)
   cookedWeightGrams?: number;      // Poids cuit / réhydraté équivalent
   unit?: string;                   // Unité affichée optionnelle (ex: 'g', 'ml', 'pièce')
+  pieceCount?: number;             // Nombre de pièces calculé (ex: 3 pour 3 œufs)
   category: IngredientCategory;
   note?: string;                   // Précision (ex: 'en lanières', 'en dés')
 }

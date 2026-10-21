@@ -72,12 +72,17 @@ export class RecipeService {
         ing.cookedWeightGrams != null
           ? Math.round(ing.cookedWeightGrams * weightFactor)
           : undefined;
+      const scaledPieceCount =
+        ing.pieceCount != null
+          ? Math.max(1, Math.round(ing.pieceCount * weightFactor))
+          : undefined;
 
       return {
         ...ing,
         weightGrams: scaledWeight,
         dryWeightGrams: scaledDryWeight,
         cookedWeightGrams: scaledCookedWeight,
+        pieceCount: scaledPieceCount,
       };
     });
 

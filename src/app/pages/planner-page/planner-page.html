@@ -1,0 +1,592 @@
+﻿<div class="planner-page-container">
+  <!-- ======================================================== -->
+  <!-- HERO HEADER & STATS                                      -->
+  <!-- ======================================================== -->
+  <header class="planner-hero">
+    <div class="hero-tag">📅 Organisation Hebdomadaire & Courses</div>
+    <h1 class="hero-title">
+      Planifiez votre Semaine & <span class="gradient-text">Générez vos Courses</span>
+    </h1>
+    <p class="hero-desc">
+      Assignez facilement vos recettes saines pour chaque repas du Lundi au Dimanche.
+      FitGoal6Packs calibre automatiquement les quantités et génère une liste de courses complète, avec <strong>projection à l'unité pour les produits achetés à la pièce</strong> (bananes, avocats, œufs...).
+    </p>
+
+    <!-- Barre d'outils et statistiques -->
+    <div class="planner-toolbar">
+      <div class="toolbar-stats">
+        <div class="stat-pill" title="Objectif calorique calculé à l'étape profil">
+          <span class="stat-icon">🎯</span>
+          <div class="stat-text">
+            <span class="stat-label">Cible journalière</span>
+            <span class="stat-value">{{ userPlan().targetCalories }} kcal</span>
+          </div>
+        </div>
+
+        <div class="stat-pill" title="Nombre de repas planifiés sur la semaine">
+          <span class="stat-icon">📅</span>
+          <div class="stat-text">
+            <span class="stat-label">Repas planifiés</span>
+            <span class="stat-value">{{ plannedMealsCount() }} / {{ totalSlotsCount() }} ({{ plannedPercentage() }}%)</span>
+          </div>
+        </div>
+
+        <div class="stat-pill" title="Nombre d'articles uniques dans la liste de courses">
+          <span class="stat-icon">🛒</span>
+          <div class="stat-text">
+            <span class="stat-label">Articles à acheter</span>
+            <span class="stat-value">{{ totalGroceryCount() }} articles</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar-actions">
+        <button
+          type="button"
+          class="btn-tool btn-auto"
+          (click)="autoGeneratePlan()"
+          title="Remplir automatiquement tous les créneaux avec des repas équilibrés"
+        >
+          <span class="btn-icon">⚡</span>
+          <span>Remplir automatiquement</span>
+        </button>
+
+        @if (plannedMealsCount() > 0) {
+          <button
+            type="button"
+            class="btn-tool btn-clear"
+            (click)="clearPlan()"
+            title="Réinitialiser tous les repas de la semaine"
+          >
+            <span class="btn-icon">🗑️</span>
+            <span>Vider la semaine</span>
+          </button>
+        }
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- NAVIGATION PAR ONGLETS (PLANNING vs COURSES)             -->
+  <!-- ======================================================== -->
+  <nav class="tabs-nav" role="tablist" aria-label="Navigation du planificateur">
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'planner'"
+      (click)="setActiveTab('planner')"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'planner'"
+      id="tab-planner"
+      aria-controls="panel-planner"
+    >
+      <span class="tab-icon">📅</span>
+      <span>Planning de la Semaine</span>
+      <span class="tab-badge">{{ plannedMealsCount() }}/{{ totalSlotsCount() }}</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'groceries'"
+      (click)="setActiveTab('groceries')"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'groceries'"
+      id="tab-groceries"
+      aria-controls="panel-groceries"
+    >
+      <span class="tab-icon">🛒</span>
+      <span>Liste de Courses</span>
+      <span class="tab-badge">{{ totalGroceryCount() }}</span>
+    </button>
+  </nav>
+
+  <!-- ======================================================== -->
+  <!-- VUE 1 : PLANNING DE LA SEMAINE                           -->
+  <!-- ======================================================== -->
+  @if (activeTab() === 'planner') {
+    <section id="panel-planner" role="tabpanel" aria-labelledby="tab-planner" class="planner-view">
+      <!-- Filtres de jours pour petits écrans ou navigation rapide -->
+      <div class="days-selector-bar" role="radiogroup" aria-label="Filtrer les jours">
+        <button
+          type="button"
+          class="day-filter-btn"
+          [class.active]="selectedDayFilter() === 'all'"
+          (click)="setDayFilter('all')"
+          role="radio"
+          [attr.aria-checked]="selectedDayFilter() === 'all'"
+        >
+          Toute la semaine (7 jours)
+        </button>
+        @for (day of daysOfWeek; track day.key) {
+          <button
+            type="button"
+            class="day-filter-btn"
+            [class.active]="selectedDayFilter() === day.key"
+            (click)="setDayFilter(day.key)"
+            role="radio"
+            [attr.aria-checked]="selectedDayFilter() === day.key"
+          >
+            {{ day.label }}
+          </button>
+        }
+      </div>
+
+      <!-- Grille des 7 jours -->
+      <div class="week-days-grid">
+        @for (day of daysPlan(); track day.day) {
+          @if (selectedDayFilter() === 'all' || selectedDayFilter() === day.day) {
+            <article class="day-card">
+              <!-- En-tête de la journée -->
+              <div class="day-card-header">
+                <div class="day-title-wrap">
+                  <h2 class="day-title">{{ day.label }}</h2>
+                  <span class="day-cal-count" [class.cal-complete]="day.totalCalories > 0">
+                    {{ day.totalCalories }} / {{ day.targetDayCalories }} kcal
+                  </span>
+                </div>
+
+                <!-- Petite jauge d'énergie du jour -->
+                <div class="day-progress-track">
+                  <div
+                    class="day-progress-fill"
+                    [style.width.%]="calcDayProgress(day)"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Liste des créneaux de repas de la journée -->
+              <div class="day-slots-list">
+                @for (slot of day.slots; track slot.slotId) {
+                  @if (slot.recipe; as recipe) {
+                    <!-- Créneau AVEC recette -->
+                    <div class="slot-card filled-slot">
+                      <div class="slot-top-row">
+                        <span class="slot-type-badge">{{ slot.icon }} {{ slot.slotName }}</span>
+                        <span class="slot-time">{{ slot.timeSuggestion }}</span>
+                      </div>
+
+                      <div class="recipe-snippet">
+                        <span class="snippet-emoji">{{ recipe.emoji }}</span>
+                        <div class="snippet-info">
+                          <h3 class="snippet-title">{{ recipe.title }}</h3>
+                          <div class="snippet-meta">
+                            <span class="cal-highlight"><strong>{{ slot.scaledCalories }}</strong> kcal</span>
+                            <span class="meta-dot">&bull;</span>
+                            <span class="macros-mini">
+                              P:<strong>{{ slot.scaledProtein }}g</strong>
+                              G:<strong>{{ slot.scaledCarbs }}g</strong>
+                              L:<strong>{{ slot.scaledFats }}g</strong>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="slot-actions">
+                        <button
+                          type="button"
+                          class="action-btn view-btn"
+                          (click)="openRecipeDetail(recipe, slot.targetCalories)"
+                          title="Consulter la fiche détaillée et pesées"
+                        >
+                          👁️ Fiche
+                        </button>
+                        <button
+                          type="button"
+                          class="action-btn change-btn"
+                          (click)="openPicker(day.day, day.label, slot)"
+                          title="Changer de recette"
+                        >
+                          🔄 Changer
+                        </button>
+                        <button
+                          type="button"
+                          class="action-btn delete-btn"
+                          (click)="removeRecipeFromSlot(day.day, slot.slotId)"
+                          title="Retirer ce repas"
+                          aria-label="Supprimer ce repas du planning"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  } @else {
+                    <!-- Créneau VIDE -->
+                    <div class="slot-card empty-slot">
+                      <div class="slot-top-row">
+                        <span class="slot-type-badge empty-type">{{ slot.icon }} {{ slot.slotName }}</span>
+                        <span class="target-cal-badge">{{ slot.targetCalories }} kcal</span>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="btn-add-recipe"
+                        (click)="openPicker(day.day, day.label, slot)"
+                        title="Ajouter une recette pour ce créneau"
+                      >
+                        <span class="plus-icon">+</span>
+                        <span>Choisir une recette</span>
+                      </button>
+                    </div>
+                  }
+                }
+              </div>
+            </article>
+          }
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ======================================================== -->
+  <!-- VUE 2 : LISTE DE COURSES AUTOMATIQUE                     -->
+  <!-- ======================================================== -->
+  @if (activeTab() === 'groceries') {
+    <section id="panel-groceries" role="tabpanel" aria-labelledby="tab-groceries" class="groceries-view">
+      <!-- Bannière de commande & actions pour la liste de courses -->
+      <div class="groceries-header-card">
+        <div class="header-content">
+          <div class="header-texts">
+            <h2 class="groceries-title">Votre Liste de Courses Consolidée</h2>
+            <p class="groceries-sub">
+              Calculée en agrégeant tous les ingrédients de vos repas planifiés.
+              Pour les produits s'achetant à l'unité (bananes, avocats, œufs...), les quantités sont automatiquement converties en <strong>nombre de pièces à acheter</strong> !
+            </p>
+          </div>
+
+          <!-- Bouton principal de copie -->
+          <div class="copy-action-group">
+            <button
+              type="button"
+              class="btn-copy-groceries"
+              (click)="copyGroceryListToClipboard()"
+              title="Copier la liste formatée dans le presse-papier"
+            >
+              <span class="copy-icon">📋</span>
+              <span class="copy-text">Copier la liste de courses</span>
+            </button>
+
+            @if (copySuccess()) {
+              <div class="copy-toast" role="status" aria-live="polite">
+                ✓ Liste copiée avec succès ! Prête à coller dans vos notes ou messages.
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Suivi des achats (cochage) -->
+        <div class="groceries-progress-row">
+          <div class="progress-details">
+            <span class="progress-count">
+              <strong>{{ checkedGroceryCount() }}</strong> / {{ totalGroceryCount() }} articles cochés
+            </span>
+            <span class="progress-pct">{{ checkedPercentage() }}%</span>
+          </div>
+
+          <div class="groceries-progress-track">
+            <div class="groceries-progress-fill" [style.width.%]="checkedPercentage()"></div>
+          </div>
+
+          <div class="check-actions">
+            <button type="button" class="mini-text-btn" (click)="checkAllGrocery()">Tout cocher</button>
+            <span class="sep">&bull;</span>
+            <button type="button" class="mini-text-btn" (click)="clearAllCheckedGrocery()">Tout décocher</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- État vide si aucun repas n'est planifié -->
+      @if (groceryGroups().length === 0) {
+        <div class="empty-groceries-card">
+          <span class="empty-icon">🛒</span>
+          <h3 class="empty-title">Aucun article dans votre liste de courses</h3>
+          <p class="empty-desc">
+            Vous n'avez pas encore ajouté de recettes dans votre planning de la semaine.
+            Commencez par planifier vos repas ou utilisez la génération automatique !
+          </p>
+          <div class="empty-actions">
+            <button type="button" class="btn-primary" (click)="autoGeneratePlan(); setActiveTab('planner')">
+              ⚡ Remplir ma semaine automatiquement
+            </button>
+            <button type="button" class="btn-secondary" (click)="setActiveTab('planner')">
+              📅 Aller au planning
+            </button>
+          </div>
+        </div>
+      } @else {
+        <!-- Grille des rayons de courses -->
+        <div class="grocery-groups-grid">
+          @for (group of groceryGroups(); track group.category) {
+            <div class="grocery-category-card">
+              <div class="category-header">
+                <span class="category-icon">{{ group.icon }}</span>
+                <h3 class="category-title">{{ group.title }}</h3>
+                <span class="category-count-chip">{{ group.items.length }}</span>
+              </div>
+
+              <ul class="grocery-items-list" role="list">
+                @for (item of group.items; track item.id) {
+                  <li class="grocery-item-row" [class.item-checked]="item.checked">
+                    <label class="item-label">
+                      <input
+                        type="checkbox"
+                        class="item-checkbox"
+                        [checked]="item.checked"
+                        (change)="toggleItemChecked(item.id)"
+                        aria-label="Cocher {{ item.name }}"
+                      />
+                      <div class="item-info">
+                        <span class="item-name">{{ item.name }}</span>
+                        @if (item.recipesUsedIn.length > 0) {
+                          <span class="item-usage" title="{{ item.recipesUsedIn.join(', ') }}">
+                            Pour : {{ item.recipesUsedIn.slice(0, 2).join(', ') }}{{ item.recipesUsedIn.length > 2 ? '...' : '' }}
+                          </span>
+                        }
+                      </div>
+                    </label>
+
+                    <div class="item-quantity-badge">
+                      @if (item.isPieceUnit && item.pieceCount) {
+                        <!-- Conversion Standard à la Pièce (Bananes, Avocats, Œufs...) -->
+                        <div class="piece-unit-box" title="Projection standard à la pièce calculée par FitGoal6Packs">
+                          <span class="piece-num">{{ item.pieceCount }}</span>
+                          <span class="piece-lbl">{{ item.pieceLabel }}</span>
+                          <span class="piece-approx">(~{{ item.totalWeightGrams }}g)</span>
+                        </div>
+                      } @else if (item.dryWeightGrams != null && item.cookedWeightGrams != null) {
+                        <!-- Double pesée Sec / Cuit -->
+                        <div class="dry-cooked-box">
+                          <span class="dry-tag">{{ item.dryWeightGrams }}g sec</span>
+                          <span class="cooked-tag">~{{ item.cookedWeightGrams }}g cuit</span>
+                        </div>
+                      } @else {
+                        <!-- Poids / Volume standard -->
+                        <span class="weight-tag">{{ item.totalWeightGrams }} {{ item.unit }}</span>
+                      }
+                    </div>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+
+        <!-- Bloc dépliable : Aperçu du texte copiable -->
+        <details class="raw-text-details">
+          <summary class="details-summary">
+            <span>Aperçu du texte à copier-coller (WhatsApp, Notes, Mail...)</span>
+            <span class="summary-hint">Cliquez pour voir</span>
+          </summary>
+          <div class="details-content">
+            <pre class="raw-text-box">{{ formattedGroceryText() }}</pre>
+            <button type="button" class="btn-copy-preview" (click)="copyGroceryListToClipboard()">
+              📋 Copier ce texte
+            </button>
+          </div>
+        </details>
+      }
+    </section>
+  }
+
+  <!-- ======================================================== -->
+  <!-- MODALE : SÉLECTION DE RECETTE POUR UN CRÉNEAU            -->
+  <!-- ======================================================== -->
+  @if (pickerModalState(); as picker) {
+    <div
+      class="modal-backdrop"
+      (click)="closePicker()"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="picker-title"
+    >
+      <div class="modal-picker-card" (click)="$event.stopPropagation()">
+        <div class="picker-header">
+          <div>
+            <span class="picker-badge">{{ picker.dayLabel }} &bull; {{ picker.slotName }}</span>
+            <h2 id="picker-title" class="picker-modal-title">Choisir une Recette</h2>
+            <p class="picker-cal-target">
+              Objectif calorique de ce repas : <strong>{{ picker.targetCalories }} kcal</strong>
+            </p>
+          </div>
+          <button type="button" class="close-btn" (click)="closePicker()" aria-label="Fermer la sélection">✕</button>
+        </div>
+
+        <!-- Filtres et Recherche dans la modale -->
+        <div class="picker-controls">
+          <div class="picker-tabs" role="tablist">
+            <button
+              type="button"
+              class="picker-tab"
+              [class.active]="pickerTabFilter() === 'suggested'"
+              (click)="pickerTabFilter.set('suggested')"
+              role="tab"
+            >
+              Suggestions adaptées au repas
+            </button>
+            <button
+              type="button"
+              class="picker-tab"
+              [class.active]="pickerTabFilter() === 'all'"
+              (click)="pickerTabFilter.set('all')"
+              role="tab"
+            >
+              Toutes les recettes
+            </button>
+          </div>
+
+          <div class="picker-search-box">
+            <span class="search-ico">🔍</span>
+            <input
+              type="text"
+              placeholder="Rechercher par nom, ingrédient (poulet, avoine, saumon...)"
+              [value]="pickerSearchQuery()"
+              (input)="pickerSearchQuery.set($any($event.target).value)"
+            />
+          </div>
+        </div>
+
+        <!-- Liste des recettes sélectionnables -->
+        <div class="picker-recipes-list">
+          @if (pickerRecipes().length === 0) {
+            <div class="picker-empty">
+              <span>🍳</span>
+              <p>Aucune recette ne correspond à votre filtre.</p>
+              <button type="button" class="btn-reset-picker" (click)="pickerTabFilter.set('all'); pickerSearchQuery.set('')">
+                Voir toutes les recettes
+              </button>
+            </div>
+          } @else {
+            @for (recipe of pickerRecipes(); track recipe.id) {
+              @let scaled = getScaledRecipe(recipe, picker.targetCalories);
+              <article class="picker-item-card" (click)="selectRecipeForSlot(recipe.id)">
+                <span class="picker-item-emoji">{{ recipe.emoji }}</span>
+                <div class="picker-item-main">
+                  <div class="picker-item-top">
+                    <h3 class="picker-item-title">{{ recipe.title }}</h3>
+                    @if (recipe.cookingMethod === 'air_fryer') {
+                      <span class="airfryer-chip">🌪️ Air Fryer</span>
+                    }
+                  </div>
+                  <p class="picker-item-desc">{{ recipe.description }}</p>
+                  <div class="picker-item-stats">
+                    <span class="stat-cal"><strong>{{ scaled.scaledNutrition.calories }}</strong> kcal</span>
+                    <span class="stat-macros">
+                      P: <strong>{{ scaled.scaledNutrition.protein }}g</strong> &bull;
+                      G: <strong>{{ scaled.scaledNutrition.carbs }}g</strong> &bull;
+                      L: <strong>{{ scaled.scaledNutrition.fats }}g</strong>
+                    </span>
+                    <span class="stat-time">⏱️ {{ recipe.prepTimeMinutes + recipe.cookTimeMinutes }} min</span>
+                  </div>
+                </div>
+                <button type="button" class="btn-select-recipe" aria-label="Choisir {{ recipe.title }}">
+                  Choisir
+                </button>
+              </article>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- MODALE : FICHE DÉTAILLÉE D'UNE RECETTE DU PLANNING       -->
+  <!-- ======================================================== -->
+  @if (recipeModalState(); as modal) {
+    @let modalScaled = getScaledRecipe(modal.recipe, modal.targetCalories);
+    <div
+      class="modal-backdrop"
+      (click)="closeRecipeDetail()"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="modal.recipe.title"
+    >
+      <div class="modal-detail-card" (click)="$event.stopPropagation()">
+        <button type="button" class="close-btn" (click)="closeRecipeDetail()" aria-label="Fermer la fiche">✕</button>
+
+        <div class="detail-header">
+          <span class="detail-emoji">{{ modal.recipe.emoji }}</span>
+          <div>
+            <div class="detail-badge-row">
+              @if (modal.recipe.cookingMethod === 'air_fryer' || modal.recipe.tags.includes('air_fryer')) {
+                <span class="badge-airfryer">🌪️ Cuisson Air Fryer</span>
+              }
+              <span class="badge-time">Prép : {{ modal.recipe.prepTimeMinutes }} min &bull; Cuisson : {{ modal.recipe.cookTimeMinutes }} min</span>
+            </div>
+            <h2 class="detail-title">{{ modal.recipe.title }}</h2>
+            <p class="detail-desc">{{ modal.recipe.description }}</p>
+          </div>
+        </div>
+
+        <!-- Macros calibrées pour ce créneau -->
+        <div class="detail-macros-grid">
+          <div class="macro-box">
+            <span class="m-val">{{ modalScaled.scaledNutrition.calories }}</span>
+            <span class="m-lbl">kcal</span>
+          </div>
+          <div class="macro-box">
+            <span class="m-val">{{ modalScaled.scaledNutrition.protein }}g</span>
+            <span class="m-lbl">Protéines</span>
+          </div>
+          <div class="macro-box">
+            <span class="m-val">{{ modalScaled.scaledNutrition.carbs }}g</span>
+            <span class="m-lbl">Glucides</span>
+          </div>
+          <div class="macro-box">
+            <span class="m-val">{{ modalScaled.scaledNutrition.fats }}g</span>
+            <span class="m-lbl">Lipides</span>
+          </div>
+        </div>
+
+        <div class="detail-body-grid">
+          <!-- Ingrédients pesés -->
+          <div class="detail-col">
+            <h3 class="col-title">Ingrédients calibrés ({{ modal.targetCalories }} kcal)</h3>
+            <ul class="detail-ing-list">
+              @for (ing of modalScaled.scaledIngredients; track ing.name) {
+                <li class="detail-ing-item">
+                  <span class="ing-name">{{ ing.name }}</span>
+                  @if (ing.dryWeightGrams && ing.cookedWeightGrams) {
+                    <span class="ing-double-chip">
+                      <strong>{{ ing.dryWeightGrams }}g</strong> sec &bull; ~{{ ing.cookedWeightGrams }}g cuit
+                    </span>
+                  } @else if (ing.pieceCount || (ing.unit && ing.unit.includes('pièce'))) {
+                    <div class="planner-piece-container">
+                      <span class="planner-piece-chip" title="Nombre de pièces">
+                        🥚 <strong>{{ ing.pieceCount ?? 1 }}</strong> {{ (ing.pieceCount && ing.pieceCount > 1) ? 'pièces' : 'pièce' }}
+                      </span>
+                      <span class="planner-grams-chip" title="Poids total équivalent sur la balance">
+                        ⚖️ <strong>{{ ing.weightGrams }}g</strong>
+                      </span>
+                    </div>
+                  } @else {
+                    <span class="ing-weight-chip">{{ ing.weightGrams }} {{ ing.unit ?? 'g' }}</span>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+
+          <!-- Instructions -->
+          <div class="detail-col">
+            <h3 class="col-title">Préparation & Cuisson</h3>
+            <ol class="detail-step-list">
+              @for (step of modal.recipe.instructions; track step; let idx = $index) {
+                <li class="detail-step-item">
+                  <span class="step-num">{{ idx + 1 }}</span>
+                  <p class="step-txt">{{ step }}</p>
+                </li>
+              }
+            </ol>
+          </div>
+        </div>
+
+        <div class="detail-footer">
+          <button type="button" class="btn-primary" (click)="closeRecipeDetail()">
+            Fermer la consultation
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

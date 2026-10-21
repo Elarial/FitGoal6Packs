@@ -60,6 +60,8 @@
               max="100"
               [value]="profile().age"
               (input)="onNumberChange('age', $event)"
+              (change)="onNumberChange('age', $event)"
+              (blur)="onNumberChange('age', $event)"
               required
             />
             <span class="field-unit">ans</span>
@@ -77,6 +79,8 @@
               max="230"
               [value]="profile().height"
               (input)="onNumberChange('height', $event)"
+              (change)="onNumberChange('height', $event)"
+              (blur)="onNumberChange('height', $event)"
               required
             />
             <span class="field-unit">cm</span>
@@ -95,6 +99,8 @@
               step="0.5"
               [value]="profile().weight"
               (input)="onNumberChange('weight', $event)"
+              (change)="onNumberChange('weight', $event)"
+              (blur)="onNumberChange('weight', $event)"
               required
             />
             <span class="field-unit">kg</span>
@@ -241,6 +247,52 @@
           <span class="diet-sub">Modéré en glucides, favorisant les bonnes graisses</span>
         </button>
       </div>
+    </div>
+
+    <!-- 1.6 Persistance & Sauvegarde du Profil -->
+    <div class="form-section persistence-section">
+      <div class="persistence-card">
+        <div class="persistence-status">
+          <span class="status-indicator-dot"></span>
+          <div class="status-texts">
+            <span class="status-title">Sauvegarde automatique active</span>
+            <span class="status-desc">
+              Vos saisies sont enregistrées dans votre navigateur et persisteront après redémarrage.
+              @if (nutritionService.lastSavedTimestamp(); as time) {
+                <span class="last-saved-time">&bull; Dernière sauvegarde à {{ time }}</span>
+              }
+            </span>
+          </div>
+        </div>
+
+        <div class="persistence-actions">
+          <button
+            type="button"
+            class="btn-save-profile"
+            (click)="onSaveExplicitly()"
+            title="Enregistrer explicitement vos données"
+          >
+            <span class="btn-icon">💾</span>
+            <span>Enregistrer mon profil</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn-reset-profile"
+            (click)="onResetDefaults()"
+            title="Réinitialiser aux valeurs d'origine"
+          >
+            <span>Réinitialiser</span>
+          </button>
+        </div>
+      </div>
+
+      @if (toastMessage(); as msg) {
+        <div class="save-toast" role="status" aria-live="polite">
+          <span class="toast-icon">✓</span>
+          <span>{{ msg }}</span>
+        </div>
+      }
     </div>
   </form>
 

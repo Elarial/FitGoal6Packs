@@ -56,4 +56,21 @@ describe('RecipeService', () => {
     expect(scaledOats!.dryWeightGrams!).toBeGreaterThan(baseOats!.dryWeightGrams!);
     expect(scaledOats!.cookedWeightGrams!).toBeGreaterThan(baseOats!.cookedWeightGrams!);
   });
+
+  it('should scale pieceCount for ingredients like eggs when calorie target increases', () => {
+    // rec-p2 has 3 eggs for 395 kcal
+    const frittata = service.recipes().find((r) => r.id === 'rec-p2');
+    expect(frittata).toBeDefined();
+
+    const eggBase = frittata!.ingredients.find((i) => i.name.toLowerCase().includes('œufs') || i.name.toLowerCase().includes('oeufs'));
+    expect(eggBase).toBeDefined();
+    expect(eggBase!.pieceCount).toBe(3);
+
+    // Scale up to 800 kcal (~2x)
+    const scaled = service.scaleRecipeToTarget(frittata!, 800);
+    const eggScaled = scaled.scaledIngredients.find((i) => i.name.toLowerCase().includes('œufs') || i.name.toLowerCase().includes('oeufs'));
+    expect(eggScaled).toBeDefined();
+    expect(eggScaled!.pieceCount).toBeGreaterThanOrEqual(5);
+    expect(eggScaled!.weightGrams).toBeGreaterThan(eggBase!.weightGrams);
+  });
 });

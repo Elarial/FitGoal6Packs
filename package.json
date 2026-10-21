@@ -1,12 +1,17 @@
 {
   "name": "fit-goal",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "FitGoal6Packs - Suivi & Calculateur Diététique Personnel",
+  "author": "FitGoal",
+  "main": "electron/main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --base-href ./",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "electron:start": "ng build --base-href ./ && electron .",
+    "electron:make": "ng build --base-href ./ && electron-builder --win"
   },
   "private": true,
   "packageManager": "npm@11.19.0",
@@ -24,9 +29,28 @@
     "@angular/build": "^22.1.8",
     "@angular/cli": "^22.1.8",
     "@angular/compiler-cli": "^22.1.0",
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2",
     "vitest": "^4.0.8"
+  },
+  "build": {
+    "appId": "com.fitgoal.app",
+    "productName": "FitGoal6Packs",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "electron/**/*",
+      "dist/fit-goal/browser/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    }
   }
 }

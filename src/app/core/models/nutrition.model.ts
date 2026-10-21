@@ -56,3 +56,11 @@ export interface NutritionPlan {
   meals: MealSlot[];
   recommendations: string[];
 }
+
+export interface SavedUserData {
+  version: string;
+  savedAt: string;
+  userProfile: UserProfile;
+}
+
+export * from './planner.model';

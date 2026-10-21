@@ -1,4 +1,4 @@
-﻿import { Component, inject } from '@angular/core';
+﻿import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NutritionService } from '../../core/services/nutrition.service';
 import {
@@ -17,6 +17,7 @@ import {
 export class ProfileFormComponent {
   protected readonly nutritionService = inject(NutritionService);
   protected readonly profile = this.nutritionService.profile;
+  protected readonly toastMessage = signal<string | null>(null);
 
   protected readonly activityOptions: {
     level: ActivityLevel;
@@ -130,5 +131,22 @@ export class ProfileFormComponent {
     if (!isNaN(value) && value > 0) {
       this.nutritionService.updateProfile({ [field]: value });
     }
+  }
+
+  onSaveExplicitly(): void {
+    this.nutritionService.saveProfileExplicitly();
+    this.showToast('✅ Votre profil a été sauvegardé avec succès ! Vos données persisteront après redémarrage.');
+  }
+
+  onResetDefaults(): void {
+    this.nutritionService.resetToDefaults();
+    this.showToast('↺ Le profil a été réinitialisé aux valeurs d’origine.');
+  }
+
+  private showToast(message: string): void {
+    this.toastMessage.set(message);
+    setTimeout(() => {
+      this.toastMessage.set(null);
+    }, 4000);
   }
 }

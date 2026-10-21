@@ -4,11 +4,12 @@ import { App } from './app';
 import { routes } from './app.routes';
 import { PlanPageComponent } from './pages/plan-page/plan-page';
 import { RecipesPageComponent } from './pages/recipes-page/recipes-page';
+import { PlannerPageComponent } from './pages/planner-page/planner-page';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App, PlanPageComponent, RecipesPageComponent],
+      imports: [App, PlanPageComponent, RecipesPageComponent, PlannerPageComponent],
       providers: [provideRouter(routes)],
     }).compileComponents();
   });
@@ -23,7 +24,7 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.brand-title')?.textContent).toContain('Fit');
+    expect(compiled.querySelector('.brand-title')?.textContent).toContain('FitGoal6Packs');
   });
 
   it('should create PlanPageComponent with main title', () => {
@@ -39,5 +40,12 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.hero-title')?.textContent).toContain('Recettes');
     expect(compiled.querySelectorAll('.recipe-card').length).toBeGreaterThan(0);
+  });
+
+  it('should create PlannerPageComponent with hero title', () => {
+    const fixture = TestBed.createComponent(PlannerPageComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.hero-title')?.textContent).toContain('Planifiez votre Semaine');
   });
 });

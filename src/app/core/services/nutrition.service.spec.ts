@@ -5,9 +5,14 @@ describe('NutritionService', () => {
   let service: NutritionService;
 
   beforeEach(() => {
+    localStorage.clear();
     TestBed.configureTestingModule({});
     service = TestBed.inject(NutritionService);
     service.resetToDefaults();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
   });
 
   it('should be created with default profile', () => {
@@ -68,5 +73,44 @@ describe('NutritionService', () => {
     // BMI = 70 / (1.75 * 1.75) = 22.86 -> 22.9
     expect(plan.bmi).toBe(22.9);
     expect(plan.bmiCategory).toBe('Poids santé');
+  });
+
+  it('should persist profile to localStorage with timestamp on update', () => {
+    service.updateProfile({
+      weight: 82,
+      height: 185,
+      age: 32,
+    });
+
+    const storedRaw = localStorage.getItem('fitgoal_user_profile');
+    expect(storedRaw).toBeTruthy();
+    const parsed = JSON.parse(storedRaw!);
+    expect(parsed.userProfile).toBeDefined();
+    expect(parsed.userProfile.weight).toBe(82);
+    expect(parsed.userProfile.height).toBe(185);
+    expect(parsed.version).toBe('1.0');
+    expect(service.lastSavedTimestamp()).toBeTruthy();
+  });
+
+  it('should export and import user profile data successfully', () => {
+    service.updateProfile({
+      weight: 90,
+      goal: 'muscle_gain',
+      mealsPerDay: 5,
+    });
+
+    const exported = service.exportUserData();
+    expect(exported).toContain('"weight": 90');
+    expect(exported.includes('muscle_gain')).toBe(true);
+
+    // Reset then import
+    service.resetToDefaults();
+    expect(service.profile().weight).toBe(75);
+
+    const success = service.importUserData(exported);
+    expect(success).toBe(true);
+    expect(service.profile().weight).toBe(90);
+    expect(service.profile().goal).toBe('muscle_gain');
+    expect(service.profile().mealsPerDay).toBe(5);
   });
 });

@@ -259,7 +259,7 @@
 
   input {
     width: 100%;
-    padding: 0.75rem 2.5rem 0.75rem 2.6rem;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
     background: var(--bg-input);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
@@ -1000,6 +1000,53 @@
   }
 }
 
+/* Piece vs Weight Chips for Eggs & piece units */
+.piece-weight-container {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.piece-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+
+  strong {
+    font-weight: 800;
+    color: #fef08a;
+  }
+}
+
+.grams-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  font-weight: 600;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+
+  strong {
+    font-weight: 800;
+    color: #e0f2fe;
+  }
+}
+
 .instructions-list {
   list-style: none;
   display: flex;
@@ -1077,7 +1124,8 @@
     padding: 1.25rem;
   }
 
-  .double-weight-container {
+  .double-weight-container,
+  .piece-weight-container {
     flex-direction: column;
     align-items: flex-end;
   }

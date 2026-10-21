@@ -259,6 +259,8 @@
                   <span class="preview-chip">
                     @if (ing.dryWeightGrams && ing.cookedWeightGrams) {
                       <strong>{{ ing.name }}</strong> ({{ ing.dryWeightGrams }}g sec &bull; ~{{ ing.cookedWeightGrams }}g cuit)
+                    } @else if (ing.pieceCount || (ing.unit && ing.unit.includes('pièce'))) {
+                      <strong>{{ ing.name }}</strong> (🥚 {{ ing.pieceCount ?? 1 }} {{ (ing.pieceCount && ing.pieceCount > 1) ? 'pièces' : 'pièce' }} &bull; ⚖️ {{ ing.weightGrams }}g)
                     } @else {
                       {{ ing.name }} ({{ ing.weightGrams }}g)
                     }
@@ -421,6 +423,15 @@
                         </span>
                         <span class="weight-chip cooked-chip" title="Poids équivalent cuit dans votre assiette">
                           🥘 <strong>~{{ ing.cookedWeightGrams }}g</strong> cuit
+                        </span>
+                      </div>
+                    } @else if (ing.pieceCount || (ing.unit && ing.unit.includes('pièce'))) {
+                      <div class="piece-weight-container">
+                        <span class="piece-chip" title="Nombre de pièces à utiliser">
+                          🥚 <strong>{{ ing.pieceCount ?? 1 }}</strong> {{ (ing.pieceCount && ing.pieceCount > 1) ? 'pièces' : 'pièce' }}
+                        </span>
+                        <span class="grams-chip" title="Poids total équivalent sur la balance">
+                          ⚖️ <strong>{{ ing.weightGrams }}g</strong>
                         </span>
                       </div>
                     } @else {

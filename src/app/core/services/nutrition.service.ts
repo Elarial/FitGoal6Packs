@@ -7,6 +7,7 @@ import {
   ActivityLevel,
   DietGoal,
   DietType,
+  SavedUserData,
 } from '../models/nutrition.model';
 
 const STORAGE_KEY = 'fitgoal_user_profile';
@@ -27,6 +28,8 @@ const DEFAULT_PROFILE: UserProfile = {
 })
 export class NutritionService {
   readonly profile = signal<UserProfile>(this.loadProfileFromStorage());
+  readonly lastSavedTimestamp = signal<string | null>(this.loadLastSavedTimestamp());
+  readonly saveStatus = signal<'saved' | 'idle'>('saved');
 
   readonly plan = computed<NutritionPlan>(() => {
     return this.calculateNutritionPlan(this.profile());
@@ -40,9 +43,50 @@ export class NutritionService {
     });
   }
 
+  saveProfileExplicitly(): void {
+    this.saveProfileToStorage(this.profile());
+  }
+
   resetToDefaults(): void {
     this.profile.set({ ...DEFAULT_PROFILE });
     this.saveProfileToStorage(DEFAULT_PROFILE);
+  }
+
+  exportUserData(): string {
+    const data: SavedUserData = {
+      version: '1.0',
+      savedAt: new Date().toISOString(),
+      userProfile: this.profile(),
+    };
+    return JSON.stringify(data, null, 2);
+  }
+
+  importUserData(jsonString: string): boolean {
+    try {
+      const parsed = JSON.parse(jsonString);
+      const rawProfile: Partial<UserProfile> =
+        parsed && typeof parsed === 'object' && 'userProfile' in parsed
+          ? parsed.userProfile
+          : parsed;
+
+      if (rawProfile && typeof rawProfile === 'object') {
+        const cleaned: Partial<UserProfile> = {};
+        if (rawProfile.gender === 'male' || rawProfile.gender === 'female') cleaned.gender = rawProfile.gender;
+        if (typeof rawProfile.age === 'number' && rawProfile.age > 0) cleaned.age = rawProfile.age;
+        if (typeof rawProfile.height === 'number' && rawProfile.height > 0) cleaned.height = rawProfile.height;
+        if (typeof rawProfile.weight === 'number' && rawProfile.weight > 0) cleaned.weight = rawProfile.weight;
+        if (rawProfile.activityLevel) cleaned.activityLevel = rawProfile.activityLevel;
+        if (rawProfile.goal) cleaned.goal = rawProfile.goal;
+        if (rawProfile.dietType) cleaned.dietType = rawProfile.dietType;
+        if (typeof rawProfile.mealsPerDay === 'number') cleaned.mealsPerDay = rawProfile.mealsPerDay;
+
+        this.updateProfile(cleaned);
+        return true;
+      }
+    } catch {
+      // JSON format issue
+    }
+    return false;
   }
 
   private loadProfileFromStorage(): UserProfile {
@@ -50,7 +94,12 @@ export class NutritionService {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        return { ...DEFAULT_PROFILE, ...parsed };
+        if (parsed && typeof parsed === 'object') {
+          if ('userProfile' in parsed && parsed.userProfile) {
+            return { ...DEFAULT_PROFILE, ...parsed.userProfile };
+          }
+          return { ...DEFAULT_PROFILE, ...parsed };
+        }
       }
     } catch {
       // Fallback silently if localStorage is not accessible
@@ -58,9 +107,35 @@ export class NutritionService {
     return { ...DEFAULT_PROFILE };
   }
 
+  private loadLastSavedTimestamp(): string | null {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object' && parsed.savedAt) {
+          const date = new Date(parsed.savedAt);
+          if (!isNaN(date.getTime())) {
+            return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+          }
+        }
+      }
+    } catch {
+      // Fallback
+    }
+    return null;
+  }
+
   private saveProfileToStorage(profile: UserProfile): void {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+      const payload: SavedUserData = {
+        version: '1.0',
+        savedAt: new Date().toISOString(),
+        userProfile: profile,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      const nowStr = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      this.lastSavedTimestamp.set(nowStr);
+      this.saveStatus.set('saved');
     } catch {
       // Ignore storage errors in restricted contexts
     }
