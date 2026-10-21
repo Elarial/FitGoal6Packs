@@ -1,9 +1,10 @@
 ﻿<header class="navbar">
   <div class="nav-container">
+    <!-- Marque / Logo -->
     <div class="brand">
       <a routerLink="/" class="brand-link" title="Accueil FitGoal6Packs">
         <div class="logo-icon" aria-hidden="true">
-          <!-- Icône nutrition & diététique : Pomme & Feuille saine -->
+          <!-- Icône nutrition : Pomme & Feuille saine -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z" />
             <path d="M10 2c1 .5 2 2 2 5" />
@@ -16,35 +17,42 @@
       </a>
     </div>
 
-    <!-- Navigation principale -->
+    <!-- Navigation principale (adaptée mobile / desktop) -->
     <nav class="main-nav" aria-label="Navigation principale">
       <a
         routerLink="/"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
         class="nav-tab"
+        title="Plan & Profil"
       >
         <span class="nav-icon">📊</span>
-        <span>Plan & Profil</span>
+        <span class="nav-label-full">Plan & Profil</span>
+        <span class="nav-label-short">Plan</span>
       </a>
       <a
         routerLink="/planning"
         routerLinkActive="active"
         class="nav-tab"
+        title="Planning Hebdomadaire & Courses"
       >
         <span class="nav-icon">📅</span>
-        <span>Planning & Courses</span>
+        <span class="nav-label-full">Planning & Courses</span>
+        <span class="nav-label-short">Planning</span>
       </a>
       <a
         routerLink="/recettes"
         routerLinkActive="active"
         class="nav-tab"
+        title="Recettes Personnalisées"
       >
         <span class="nav-icon">🍳</span>
-        <span>Recettes Personnalisées</span>
+        <span class="nav-label-full">Recettes Personnalisées</span>
+        <span class="nav-label-short">Recettes</span>
       </a>
     </nav>
 
+    <!-- Statut / Actions rapides -->
     <div class="header-status">
       <div class="badge goal-badge">
         <span class="badge-dot"></span>
@@ -73,11 +81,11 @@
         title="Réinitialiser les valeurs par défaut"
         aria-label="Réinitialiser les paramètres"
       >
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
           <path d="M3 3v5h5" />
         </svg>
-        <span>Reset</span>
+        <span class="reset-label">Reset</span>
       </button>
     </div>
   </div>
