@@ -224,11 +224,8 @@
               }
             </div>
 
-            <!-- Titre avec emoji inline et description -->
-            <h3 class="recipe-title">
-              <span class="recipe-emoji-inline">{{ recipe.emoji }}</span>
-              <span>{{ recipe.title }}</span>
-            </h3>
+            <!-- Titre et description -->
+            <h3 class="recipe-title">{{ recipe.emoji }} {{ recipe.title }}</h3>
             <p class="recipe-desc">{{ recipe.description }}</p>
 
             <!-- Macros cibles (adaptées ou standards) -->
@@ -313,20 +310,15 @@
 
         <!-- En-tête de la modale -->
         <div class="modal-header">
-          <div class="modal-identity">
-            <span class="modal-emoji">{{ modalRecipe.emoji }}</span>
-            <div>
-              <div class="modal-meta-row">
-                @if (modalRecipe.cookingMethod === 'air_fryer' || modalRecipe.tags.includes('air_fryer')) {
-                  <span class="modal-badge-airfryer">🌪️ Cuisson Air Fryer</span>
-                }
-                <span class="modal-badge-diff">{{ modalRecipe.difficulty === 'easy' ? 'Facile' : 'Intermédiaire' }}</span>
-                <span class="modal-badge-time">Prépa : {{ modalRecipe.prepTimeMinutes }} min &bull; Cuisson : {{ modalRecipe.cookTimeMinutes }} min</span>
-              </div>
-              <h2 class="modal-title">{{ modalRecipe.title }}</h2>
-              <p class="modal-desc">{{ modalRecipe.description }}</p>
-            </div>
+          <div class="modal-meta-row">
+            @if (modalRecipe.cookingMethod === 'air_fryer' || modalRecipe.tags.includes('air_fryer')) {
+              <span class="modal-badge-airfryer">🌪️ Cuisson Air Fryer</span>
+            }
+            <span class="modal-badge-diff">{{ modalRecipe.difficulty === 'easy' ? 'Facile' : 'Intermédiaire' }}</span>
+            <span class="modal-badge-time">Prépa : {{ modalRecipe.prepTimeMinutes }} min &bull; Cuisson : {{ modalRecipe.cookTimeMinutes }} min</span>
           </div>
+          <h2 class="modal-title">{{ modalRecipe.emoji }} {{ modalRecipe.title }}</h2>
+          <p class="modal-desc">{{ modalRecipe.description }}</p>
         </div>
 
         <!-- Sélecteur d'adaptation dans la modale -->

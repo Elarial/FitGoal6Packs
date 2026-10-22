@@ -507,17 +507,14 @@
         <button type="button" class="close-btn" (click)="closeRecipeDetail()" aria-label="Fermer la fiche">✕</button>
 
         <div class="detail-header">
-          <span class="detail-emoji">{{ modal.recipe.emoji }}</span>
-          <div>
-            <div class="detail-badge-row">
-              @if (modal.recipe.cookingMethod === 'air_fryer' || modal.recipe.tags.includes('air_fryer')) {
-                <span class="badge-airfryer">🌪️ Cuisson Air Fryer</span>
-              }
-              <span class="badge-time">Prép : {{ modal.recipe.prepTimeMinutes }} min &bull; Cuisson : {{ modal.recipe.cookTimeMinutes }} min</span>
-            </div>
-            <h2 class="detail-title">{{ modal.recipe.title }}</h2>
-            <p class="detail-desc">{{ modal.recipe.description }}</p>
+          <div class="detail-badge-row">
+            @if (modal.recipe.cookingMethod === 'air_fryer' || modal.recipe.tags.includes('air_fryer')) {
+              <span class="badge-airfryer">🌪️ Cuisson Air Fryer</span>
+            }
+            <span class="badge-time">Prép : {{ modal.recipe.prepTimeMinutes }} min &bull; Cuisson : {{ modal.recipe.cookTimeMinutes }} min</span>
           </div>
+          <h2 class="detail-title">{{ modal.recipe.emoji }} {{ modal.recipe.title }}</h2>
+          <p class="detail-desc">{{ modal.recipe.description }}</p>
         </div>
 
         <!-- Macros calibrées pour ce créneau -->
