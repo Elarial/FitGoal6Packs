@@ -209,15 +209,12 @@
           <article class="recipe-card" [class.scaled-mode]="selectedMealSlot() !== null">
             <!-- En-tête de la carte -->
             <div class="card-top">
-              <div class="recipe-badge-row">
-                <span class="recipe-emoji">{{ recipe.emoji }}</span>
-                <div class="time-and-diff">
-                  @if (recipe.cookingMethod === 'air_fryer' || recipe.tags.includes('air_fryer')) {
-                    <span class="meta-tag air-fryer-tag">🌪️ Air Fryer</span>
-                  }
-                  <span class="meta-tag">⏱️ {{ recipe.prepTimeMinutes + recipe.cookTimeMinutes }} min</span>
-                  <span class="meta-tag diff-tag">{{ recipe.difficulty === 'easy' ? 'Facile' : 'Moyen' }}</span>
-                </div>
+              <div class="time-and-diff">
+                @if (recipe.cookingMethod === 'air_fryer' || recipe.tags.includes('air_fryer')) {
+                  <span class="meta-tag air-fryer-tag">🌪️ Air Fryer</span>
+                }
+                <span class="meta-tag">⏱️ {{ recipe.prepTimeMinutes + recipe.cookTimeMinutes }} min</span>
+                <span class="meta-tag diff-tag">{{ recipe.difficulty === 'easy' ? 'Facile' : 'Moyen' }}</span>
               </div>
 
               @if (selectedMealSlot() !== null && scaled.scaleFactor !== 1) {
@@ -227,8 +224,11 @@
               }
             </div>
 
-            <!-- Titre et description -->
-            <h3 class="recipe-title">{{ recipe.title }}</h3>
+            <!-- Titre avec emoji inline et description -->
+            <h3 class="recipe-title">
+              <span class="recipe-emoji-inline">{{ recipe.emoji }}</span>
+              <span>{{ recipe.title }}</span>
+            </h3>
             <p class="recipe-desc">{{ recipe.description }}</p>
 
             <!-- Macros cibles (adaptées ou standards) -->
